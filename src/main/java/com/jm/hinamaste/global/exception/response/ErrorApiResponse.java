@@ -1,4 +1,4 @@
-package com.jm.hinamaste.global.exception;
+package com.jm.hinamaste.global.exception.response;
 
 import lombok.Builder;
 import lombok.Getter;

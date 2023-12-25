@@ -1,5 +1,6 @@
-package com.jm.hinamaste.global.exception;
+package com.jm.hinamaste.global.exception.controller;
 
+import com.jm.hinamaste.global.exception.response.ErrorApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,7 +17,7 @@ public class ExceptionController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorApiResponse> invalidRequestHandler(MethodArgumentNotValidException e) {
         ErrorApiResponse response = ErrorApiResponse.builder()
-                .code(BAD_REQUEST.name())
+                .code(String.valueOf(BAD_REQUEST.value()))
                 .message("잘못된 요청입니다.")
                 .build();
 
@@ -25,5 +26,15 @@ public class ExceptionController {
         }
 
         return ResponseEntity.status(BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(CustomExceptionHandler.class)
+    public ResponseEntity<ErrorApiResponse> CustomExceptionHandler(CustomExceptionHandler e) {
+        ErrorApiResponse response = ErrorApiResponse.builder()
+                .code(String.valueOf(e.getStatusCode()))
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(e.getStatusCode()).body(response);
     }
 }

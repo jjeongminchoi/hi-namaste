@@ -5,6 +5,8 @@ import com.jm.hinamaste.domain.member.dto.MemberResponse;
 import com.jm.hinamaste.domain.member.dto.Signup;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.member.repository.MemberRepository;
+import com.jm.hinamaste.global.exception.AlreadyExistsEmail;
+import com.jm.hinamaste.global.exception.MemberNotFound;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void signup(Signup signup) {
-        if (memberRepository.findByEmail(signup.getEmail()).isPresent()) throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        if (memberRepository.findByEmail(signup.getEmail()).isPresent()) throw new AlreadyExistsEmail();
 
         Member member = Member.builder()
                 .email(signup.getEmail())
@@ -48,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponse get(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(MemberNotFound::new);
 
         return MemberResponse.builder()
                 .email(member.getEmail())
@@ -63,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void edit(Long memberId, MemberEdit memberEdit) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(MemberNotFound::new);
         member.editMember(memberEdit);
     }
 }

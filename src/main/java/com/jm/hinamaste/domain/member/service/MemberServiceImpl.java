@@ -9,6 +9,8 @@ import com.jm.hinamaste.global.exception.AlreadyExistsEmail;
 import com.jm.hinamaste.global.exception.MemberNotFound;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,23 +24,6 @@ import java.util.stream.Collectors;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-
-    @Override
-    public void signup(Signup signup) {
-        if (memberRepository.findByEmail(signup.getEmail()).isPresent()) throw new AlreadyExistsEmail();
-
-        Member member = Member.builder()
-                .email(signup.getEmail())
-                .password(signup.getPassword())
-                .username(signup.getUsername())
-                .sex(signup.getSex())
-                .birthday(signup.getBirthday())
-                .memberType(signup.getMemberType())
-                .memberStatus(signup.getMemberStatus())
-                .build();
-
-        memberRepository.save(member);
-    }
 
     @Transactional(readOnly = true)
     @Override

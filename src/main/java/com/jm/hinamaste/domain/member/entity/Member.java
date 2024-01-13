@@ -4,24 +4,24 @@ import com.jm.hinamaste.domain.member.constant.MemberStatus;
 import com.jm.hinamaste.domain.member.constant.MemberType;
 import com.jm.hinamaste.domain.member.constant.SexType;
 import com.jm.hinamaste.domain.member.dto.MemberEdit;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
+import static jakarta.persistence.EnumType.*;
+import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-public class Member {
+public class Member implements Serializable { // 사용자 인증 정보를 세션에 저장하고 복원하기 위해 내부적으로 객체 직렬화를 사용(spring-session-jdbc)
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     private String email;
@@ -30,12 +30,15 @@ public class Member {
 
     private String username;
 
+    @Enumerated(STRING)
     private SexType sex;
 
     private LocalDate birthday;
 
+    @Enumerated(STRING)
     private MemberType memberType;
 
+    @Enumerated(STRING)
     private MemberStatus memberStatus;
 
     @Builder

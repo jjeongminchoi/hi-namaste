@@ -7,12 +7,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@NoArgsConstructor
+import static com.jm.hinamaste.domain.member.constant.MemberStatus.*;
+import static com.jm.hinamaste.domain.member.constant.MemberType.*;
+
+@Data
 @Getter
 public class Signup {
 
@@ -43,7 +46,7 @@ public class Signup {
         this.username = username;
         this.sex = sex;
         this.birthday = birthday;
-        this.memberType = MemberType.MEMBER;
-        this.memberStatus = MemberStatus.ACTIVE;
+        this.memberType = MEMBER;
+        this.memberStatus = ACTIVE;
     }
 }

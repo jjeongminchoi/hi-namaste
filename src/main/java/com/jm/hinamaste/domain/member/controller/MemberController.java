@@ -11,29 +11,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/members")
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/signup")
-    public void signup(@RequestBody @Valid Signup signup) {
-        memberService.signup(signup);
-    }
-
-    @GetMapping
+    @GetMapping("/members")
     public ResponseDto<List<MemberResponse>> getList() {
         return new ResponseDto<>(memberService.getList());
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/members/{memberId}")
     public MemberResponse get(@PathVariable Long memberId) {
         return memberService.get(memberId);
     }
 
-    @PatchMapping("/{memberId}")
+    @PatchMapping("/members/{memberId}")
     public void edit(@PathVariable Long memberId, @RequestBody @Valid MemberEdit memberEdit) {
         memberService.edit(memberId, memberEdit);
     }

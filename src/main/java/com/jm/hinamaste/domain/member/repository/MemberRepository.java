@@ -1,5 +1,6 @@
 package com.jm.hinamaste.domain.member.repository;
 
+import com.jm.hinamaste.domain.member.constant.MemberType;
 import com.jm.hinamaste.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 

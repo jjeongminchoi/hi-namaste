@@ -1,22 +1,23 @@
 package com.jm.hinamaste.domain.course.service;
 
 import com.jm.hinamaste.domain.course.dto.CourseCreate;
+import com.jm.hinamaste.domain.course.dto.CourseEdit;
 import com.jm.hinamaste.domain.course.dto.CourseResponse;
 import com.jm.hinamaste.domain.course.entity.Course;
 import com.jm.hinamaste.domain.course.repository.CourseRepository;
+import com.jm.hinamaste.domain.member.constant.MemberType;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.member.repository.MemberRepository;
 import com.jm.hinamaste.global.exception.CourseNotFound;
+import com.jm.hinamaste.global.exception.InstructorNotFound;
 import com.jm.hinamaste.global.exception.MemberNotFound;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -27,9 +28,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Long create(Long memberId, CourseCreate courseCreate) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFound::new);
+    public Long create(CourseCreate courseCreate) {
+        Member member = validate(courseCreate.getInstructorId());
 
         Course course = Course.createCourse(member, courseCreate);
         courseRepository.save(course);
@@ -48,11 +48,41 @@ public class CourseServiceImpl implements CourseService {
                 .orElseThrow(CourseNotFound::new);
 
         return CourseResponse.builder()
+                .id(course.getId())
                 .courseName(course.getCourseName())
                 .introduce(course.getIntroduce())
                 .maxCount(course.getMaxCount())
                 .maxWaitCount(course.getMaxWaitCount())
                 .instructorName(course.getMember().getUsername())
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public void edit(Long courseId, CourseEdit courseEdit) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(CourseNotFound::new);
+
+        Member member = validate(courseEdit.getInstructorId());
+
+        course.editCourse(member, courseEdit);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(CourseNotFound::new);
+        courseRepository.delete(course);
+    }
+
+    private Member validate(Long instructorId) {
+        Member member = memberRepository.findById(instructorId)
+                .orElseThrow(MemberNotFound::new);
+
+        if (!MemberType.INSTRUCTOR.equals(member.getMemberType())) {
+            throw new InstructorNotFound();
+        }
+        return member;
     }
 }

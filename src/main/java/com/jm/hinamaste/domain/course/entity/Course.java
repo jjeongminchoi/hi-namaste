@@ -1,6 +1,7 @@
 package com.jm.hinamaste.domain.course.entity;
 
 import com.jm.hinamaste.domain.course.dto.CourseCreate;
+import com.jm.hinamaste.domain.course.dto.CourseEdit;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
@@ -47,15 +48,23 @@ public class Course extends BaseEntity {
     }
 
     //==생성 메서드==//
-    public static Course createCourse(Member member, CourseCreate courseCreate) {
+    public static Course createCourse(Member instructor, CourseCreate courseCreate) {
         Course course = Course.builder()
                 .courseName(courseCreate.getCourseName())
                 .introduce(courseCreate.getIntroduce())
                 .maxCount(courseCreate.getMaxCount())
                 .maxWaitCount(courseCreate.getMaxWaitCount())
                 .build();
-        course.setMember(member);
+        course.setMember(instructor);
 
         return course;
+    }
+
+    public void editCourse(Member member, CourseEdit courseEdit) {
+        this.member = member;
+        this.courseName = courseEdit.getCourseName();
+        this.introduce = courseEdit.getIntroduce();
+        this.maxCount = courseEdit.getMaxCount();
+        this.maxWaitCount = courseEdit.getMaxWaitCount();
     }
 }

@@ -27,7 +27,8 @@ public class MemberResponse {
     private MemberStatus memberStatus;
 
     @Builder
-    public MemberResponse(String email, String username, SexType sex, LocalDate birthday, MemberType memberType, MemberStatus memberStatus) {
+    public MemberResponse(Long id, String email, String username, SexType sex, LocalDate birthday, MemberType memberType, MemberStatus memberStatus) {
+        this.id = id;
         this.email = email;
         this.username = username;
         this.sex = sex;

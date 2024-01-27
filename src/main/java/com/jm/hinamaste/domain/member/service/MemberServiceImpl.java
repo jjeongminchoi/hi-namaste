@@ -32,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(MemberNotFound::new);
 
         return MemberResponse.builder()
+                .id(member.getId())
                 .email(member.getEmail())
                 .username(member.getUsername())
                 .sex(member.getSex())

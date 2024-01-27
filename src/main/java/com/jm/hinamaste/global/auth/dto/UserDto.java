@@ -6,8 +6,10 @@ import com.jm.hinamaste.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
-public class UserDto {
+public class UserDto implements Serializable {
 
     private Long id;
 

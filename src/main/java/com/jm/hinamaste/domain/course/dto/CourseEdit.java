@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class CourseCreate {
+public class CourseEdit {
 
     @NotNull(message = "강사를 입력해 주세요.")
     private Long instructorId;
@@ -24,7 +24,7 @@ public class CourseCreate {
     private int maxWaitCount;
 
     @Builder
-    public CourseCreate(Long instructorId, String courseName, String introduce, int maxCount, int maxWaitCount) {
+    public CourseEdit(Long instructorId, String courseName, String introduce, int maxCount, int maxWaitCount) {
         this.instructorId = instructorId;
         this.courseName = courseName;
         this.introduce = introduce;

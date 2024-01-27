@@ -7,6 +7,8 @@ import lombok.Getter;
 @Getter
 public class CourseResponse {
 
+    private Long id;
+
     private String courseName;
 
     private String introduce;
@@ -18,7 +20,8 @@ public class CourseResponse {
     private String instructorName;
 
     @Builder
-    public CourseResponse(String courseName, String introduce, int maxCount, int maxWaitCount, String instructorName) {
+    public CourseResponse(Long id, String courseName, String introduce, int maxCount, int maxWaitCount, String instructorName) {
+        this.id = id;
         this.courseName = courseName;
         this.introduce = introduce;
         this.maxCount = maxCount;
@@ -27,6 +30,7 @@ public class CourseResponse {
     }
 
     public CourseResponse(Course course) {
+        this.id = course.getId();
         this.courseName = course.getCourseName();
         this.introduce = course.getIntroduce();
         this.maxCount = course.getMaxCount();

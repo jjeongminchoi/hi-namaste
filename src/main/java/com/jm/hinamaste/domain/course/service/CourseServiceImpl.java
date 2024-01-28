@@ -46,15 +46,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponse get(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(CourseNotFound::new);
-
-        return CourseResponse.builder()
-                .id(course.getId())
-                .courseName(course.getCourseName())
-                .introduce(course.getIntroduce())
-                .maxCount(course.getMaxCount())
-                .maxWaitCount(course.getMaxWaitCount())
-                .instructorName(course.getMember().getUsername())
-                .build();
+        return CourseResponse.builder().course(course).build();
     }
 
     @Transactional

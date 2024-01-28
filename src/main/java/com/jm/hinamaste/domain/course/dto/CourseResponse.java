@@ -20,15 +20,6 @@ public class CourseResponse {
     private String instructorName;
 
     @Builder
-    public CourseResponse(Long id, String courseName, String introduce, int maxCount, int maxWaitCount, String instructorName) {
-        this.id = id;
-        this.courseName = courseName;
-        this.introduce = introduce;
-        this.maxCount = maxCount;
-        this.maxWaitCount = maxWaitCount;
-        this.instructorName = instructorName;
-    }
-
     public CourseResponse(Course course) {
         this.id = course.getId();
         this.courseName = course.getCourseName();

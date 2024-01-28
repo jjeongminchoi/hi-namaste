@@ -5,6 +5,7 @@ import com.jm.hinamaste.domain.member.constant.MemberStatus;
 import com.jm.hinamaste.domain.member.constant.MemberType;
 import com.jm.hinamaste.domain.member.constant.SexType;
 import com.jm.hinamaste.domain.member.dto.MemberEdit;
+import com.jm.hinamaste.domain.member_ticket.entity.MemberTicket;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -49,6 +50,9 @@ public class Member extends BaseEntity implements Serializable { // 사용자 �
 
     @OneToMany(mappedBy = "member")
     private List<Course> courses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<MemberTicket> memberTickets = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String username, SexType sex, LocalDate birthday, MemberType memberType, MemberStatus memberStatus) {

@@ -41,13 +41,11 @@ public class Course extends BaseEntity {
         this.member = member;
     }
 
-    //==연관관계 메서드==//
     public void setMember(Member member) {
         this.member = member;
         member.getCourses().add(this);
     }
 
-    //==생성 메서드==//
     public static Course createCourse(Member instructor, CourseCreate courseCreate) {
         Course course = Course.builder()
                 .courseName(courseCreate.getCourseName())
@@ -60,8 +58,8 @@ public class Course extends BaseEntity {
         return course;
     }
 
-    public void editCourse(Member member, CourseEdit courseEdit) {
-        this.member = member;
+    public void editCourse(Member instructor, CourseEdit courseEdit) {
+        this.member = instructor;
         this.courseName = courseEdit.getCourseName();
         this.introduce = courseEdit.getIntroduce();
         this.maxCount = courseEdit.getMaxCount();

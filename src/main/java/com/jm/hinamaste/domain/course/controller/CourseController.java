@@ -23,8 +23,7 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid CourseCreate courseCreate) {
         return ResponseEntity.ok(new ResponseDto<>(
-                "수업을 생성하였습니다.",
-                courseService.create(courseCreate)
+                "수업을 생성하였습니다.", courseService.create(courseCreate)
         ));
     }
 

@@ -2,6 +2,7 @@ package com.jm.hinamaste.domain.member_ticket.entity;
 
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.ticket.entity.Ticket;
+import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class MemberTicket {
+public class MemberTicket extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +43,27 @@ public class MemberTicket {
         this.endDate = endDate;
         this.useCount = useCount;
         this.cancelCount = cancelCount;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+        member.getMemberTickets().add(this);
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+        ticket.getMemberTickets().add(this);
+    }
+
+    public static MemberTicket createMemberTicket(Member member, Ticket ticket) {
+        MemberTicket memberTicket = MemberTicket.builder()
+                .startDate(LocalDate.now().plusDays(1L))
+                .endDate(LocalDate.now().plusDays(1L).plusDays(ticket.getDeadlineDay()))
+                .useCount(0)
+                .cancelCount(0)
+                .build();
+        memberTicket.setMember(member);
+        memberTicket.setTicket(ticket);
+        return memberTicket;
     }
 }

@@ -29,9 +29,9 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public Long create(CourseCreate courseCreate) {
-        Member member = validate(courseCreate.getInstructorId());
+        Member instructor = isInstructor(courseCreate.getInstructorId());
 
-        Course course = Course.createCourse(member, courseCreate);
+        Course course = Course.createCourse(instructor, courseCreate);
         courseRepository.save(course);
 
         return course.getId();
@@ -55,9 +55,9 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(CourseNotFound::new);
 
-        Member member = validate(courseEdit.getInstructorId());
+        Member instructor = isInstructor(courseEdit.getInstructorId());
 
-        course.editCourse(member, courseEdit);
+        course.editCourse(instructor, courseEdit);
     }
 
     @Transactional
@@ -68,13 +68,14 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.delete(course);
     }
 
-    private Member validate(Long instructorId) {
+    private Member isInstructor(Long instructorId) {
         Member member = memberRepository.findById(instructorId)
                 .orElseThrow(MemberNotFound::new);
 
         if (!MemberType.INSTRUCTOR.equals(member.getMemberType())) {
             throw new InstructorNotFound();
         }
+
         return member;
     }
 }

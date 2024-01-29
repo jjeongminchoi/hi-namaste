@@ -12,4 +12,6 @@ public interface MemberService {
     MemberResponse get(Long memberId);
 
     void edit(Long memberId, MemberEdit memberEdit);
+
+    Long registerTicket(Long memberId, Long ticketId);
 }

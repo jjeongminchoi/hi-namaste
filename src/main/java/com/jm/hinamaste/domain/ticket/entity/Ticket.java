@@ -4,6 +4,7 @@ import com.jm.hinamaste.domain.member_ticket.entity.MemberTicket;
 import com.jm.hinamaste.domain.ticket.constant.CountType;
 import com.jm.hinamaste.domain.ticket.constant.TicketType;
 import com.jm.hinamaste.domain.ticket.dto.TicketEdit;
+import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,7 +19,7 @@ import static jakarta.persistence.EnumType.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Ticket {
+public class Ticket extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

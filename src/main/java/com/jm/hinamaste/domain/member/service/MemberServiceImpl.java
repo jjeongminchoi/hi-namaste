@@ -4,7 +4,11 @@ import com.jm.hinamaste.domain.member.dto.MemberEdit;
 import com.jm.hinamaste.domain.member.dto.MemberResponse;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.member.repository.MemberRepository;
+import com.jm.hinamaste.domain.member_ticket.entity.MemberTicket;
+import com.jm.hinamaste.domain.ticket.entity.Ticket;
+import com.jm.hinamaste.domain.ticket.repository.TicketRepository;
 import com.jm.hinamaste.global.exception.MemberNotFound;
+import com.jm.hinamaste.global.exception.TicketNotFound;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final TicketRepository ticketRepository;
 
     @Override
     public List<MemberResponse> getList() {
@@ -48,5 +53,19 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFound::new);
         member.editMember(memberEdit);
+    }
+
+    @Transactional
+    @Override
+    public Long registerTicket(Long memberId, Long ticketId) {
+        Member member = memberRepository.findMember(memberId)
+                .orElseThrow(MemberNotFound::new);
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(TicketNotFound::new);
+
+        MemberTicket memberTicket = MemberTicket.createMemberTicket(member, ticket);
+
+        return memberTicket.getId();
     }
 }

@@ -1,6 +1,6 @@
 package com.jm.hinamaste.domain.ticket.entity;
 
-import com.jm.hinamaste.domain.member_ticket.entity.MemberTicket;
+import com.jm.hinamaste.domain.member.entity.MemberTicket;
 import com.jm.hinamaste.domain.ticket.constant.CountType;
 import com.jm.hinamaste.domain.ticket.constant.TicketType;
 import com.jm.hinamaste.domain.ticket.dto.TicketEdit;
@@ -37,14 +37,12 @@ public class Ticket extends BaseEntity {
 
     private int deadlineDay;
 
-    private int maxReservationCount;
-
     private int price;
 
     @Enumerated(value = STRING)
     private CountType countType;
 
-    private int countSet;
+    private String countSet;
 
     private String isAutoDeduction;
 
@@ -52,13 +50,12 @@ public class Ticket extends BaseEntity {
     private List<MemberTicket> memberTickets = new ArrayList<>();
 
     @Builder
-    public Ticket(TicketType ticketType, String ticketName, int maxUseCount, int maxCancelCount, int deadlineDay, int maxReservationCount, int price, CountType countType, int countSet, String isAutoDeduction) {
+    public Ticket(TicketType ticketType, String ticketName, int maxUseCount, int maxCancelCount, int deadlineDay, int price, CountType countType, String countSet, String isAutoDeduction) {
         this.ticketType = ticketType;
         this.ticketName = ticketName;
         this.maxUseCount = maxUseCount;
         this.maxCancelCount = maxCancelCount;
         this.deadlineDay = deadlineDay;
-        this.maxReservationCount = maxReservationCount;
         this.price = price;
         this.countType = countType;
         this.countSet = countSet;
@@ -71,7 +68,6 @@ public class Ticket extends BaseEntity {
         this.maxUseCount = ticketEdit.getMaxUseCount();
         this.maxCancelCount = ticketEdit.getMaxCancelCount();
         this.deadlineDay = ticketEdit.getDeadlineDay();
-        this.maxReservationCount = ticketEdit.getMaxReservationCount();
         this.price = ticketEdit.getPrice();
         this.countType = ticketEdit.getCountType();
         this.countSet = ticketEdit.getCountSet();

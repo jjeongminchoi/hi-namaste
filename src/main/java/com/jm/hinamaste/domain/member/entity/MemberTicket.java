@@ -1,6 +1,5 @@
-package com.jm.hinamaste.domain.member_ticket.entity;
+package com.jm.hinamaste.domain.member.entity;
 
-import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.ticket.entity.Ticket;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;

@@ -29,7 +29,6 @@ public class TicketServiceImpl implements TicketService {
                 .maxUseCount(ticketCreate.getMaxUseCount())
                 .maxCancelCount(ticketCreate.getMaxCancelCount())
                 .deadlineDay(ticketCreate.getDeadlineDay())
-                .maxReservationCount(ticketCreate.getMaxReservationCount())
                 .price(ticketCreate.getPrice())
                 .countType(ticketCreate.getCountType())
                 .countSet(ticketCreate.getCountSet())

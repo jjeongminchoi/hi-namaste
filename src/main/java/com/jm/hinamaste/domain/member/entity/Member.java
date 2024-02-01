@@ -5,7 +5,6 @@ import com.jm.hinamaste.domain.member.constant.MemberStatus;
 import com.jm.hinamaste.domain.member.constant.MemberType;
 import com.jm.hinamaste.domain.member.constant.SexType;
 import com.jm.hinamaste.domain.member.dto.MemberEdit;
-import com.jm.hinamaste.domain.member_ticket.entity.MemberTicket;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;

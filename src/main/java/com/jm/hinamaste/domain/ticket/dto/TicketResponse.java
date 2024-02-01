@@ -28,7 +28,7 @@ public class TicketResponse {
 
     private CountType countType;
 
-    private int countSet;
+    private String countSet;
 
     private String isAutoDeduction;
 
@@ -40,7 +40,6 @@ public class TicketResponse {
         this.maxUseCount = ticket.getMaxUseCount();
         this.maxCancelCount = ticket.getMaxCancelCount();
         this.deadlineDay = ticket.getDeadlineDay();
-        this.maxReservationCount = ticket.getMaxReservationCount();
         this.price = ticket.getPrice();
         this.countType = ticket.getCountType();
         this.countSet = ticket.getCountSet();

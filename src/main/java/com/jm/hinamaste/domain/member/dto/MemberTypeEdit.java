@@ -11,6 +11,8 @@ public class MemberTypeEdit {
     @NotNull(message = "회원유형을 선택해 주세요.")
     private MemberType memberType;
 
+    public MemberTypeEdit() {}
+
     @Builder
     public MemberTypeEdit(MemberType memberType) {
         this.memberType = memberType;

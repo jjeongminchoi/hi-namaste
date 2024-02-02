@@ -1,5 +1,6 @@
 package com.jm.hinamaste.domain.member.controller;
 
+import com.jm.hinamaste.domain.member.constant.MemberType;
 import com.jm.hinamaste.domain.member.dto.*;
 import com.jm.hinamaste.domain.member.service.MemberService;
 import com.jm.hinamaste.global.ResponseDto;
@@ -39,5 +40,12 @@ public class MemberController {
         return ResponseEntity.ok(new ResponseDto<>(
                 "회원에게 수강권을 등록하였습니다.", memberService.registerTicket(memberId, ticketId)
         ));
+    }
+
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    @PatchMapping("/members/{memberId}/memberType")
+    public ResponseEntity<?> changeMemberType(@PathVariable Long memberId, @RequestBody @Valid MemberTypeEdit memberTypeEdit) {
+        memberService.changeMemberType(memberId, memberTypeEdit);
+        return ResponseEntity.ok(new ResponseDto<>("회원유형을 변경하였습니다."));
     }
 }

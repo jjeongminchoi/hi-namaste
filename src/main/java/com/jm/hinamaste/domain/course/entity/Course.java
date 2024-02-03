@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -24,20 +26,32 @@ public class Course extends BaseEntity {
 
     private String introduce;
 
-    private int maxCount;
+    private int maxReservationCount;
 
     private int maxWaitCount;
+
+    private int reservationDeadTime;
+
+    private int cancelDeadTime;
+
+    private LocalDate coursePeriodStart;
+
+    private LocalDate coursePeriodEnd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    public Course(String courseName, String introduce, int maxCount, int maxWaitCount, Member member) {
+    public Course(String courseName, String introduce, int maxReservationCount, int maxWaitCount, int reservationDeadTime, int cancelDeadTime, LocalDate coursePeriodStart, LocalDate coursePeriodEnd, Member member) {
         this.courseName = courseName;
         this.introduce = introduce;
-        this.maxCount = maxCount;
+        this.maxReservationCount = maxReservationCount;
         this.maxWaitCount = maxWaitCount;
+        this.reservationDeadTime = reservationDeadTime;
+        this.cancelDeadTime = cancelDeadTime;
+        this.coursePeriodStart = coursePeriodStart;
+        this.coursePeriodEnd = coursePeriodEnd;
         this.member = member;
     }
 
@@ -50,7 +64,7 @@ public class Course extends BaseEntity {
         Course course = Course.builder()
                 .courseName(courseCreate.getCourseName())
                 .introduce(courseCreate.getIntroduce())
-                .maxCount(courseCreate.getMaxCount())
+                .maxReservationCount(courseCreate.getMaxReservationCount())
                 .maxWaitCount(courseCreate.getMaxWaitCount())
                 .build();
         course.setMember(instructor);
@@ -62,7 +76,11 @@ public class Course extends BaseEntity {
         this.member = instructor;
         this.courseName = courseEdit.getCourseName();
         this.introduce = courseEdit.getIntroduce();
-        this.maxCount = courseEdit.getMaxCount();
+        this.maxReservationCount = courseEdit.getMaxReservationCount();
         this.maxWaitCount = courseEdit.getMaxWaitCount();
+        this.reservationDeadTime = courseEdit.getReservationDeadTime();
+        this.cancelDeadTime = courseEdit.getCancelDeadTime();
+        this.coursePeriodStart = courseEdit.getCoursePeriodStart();
+        this.coursePeriodEnd = courseEdit.getCoursePeriodEnd();
     }
 }

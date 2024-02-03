@@ -56,8 +56,8 @@ public class MemberTicket extends BaseEntity {
 
     public static MemberTicket createMemberTicket(Member member, Ticket ticket) {
         MemberTicket memberTicket = MemberTicket.builder()
-                .startDate(LocalDate.now().plusDays(1L))
-                .endDate(LocalDate.now().plusDays(1L).plusDays(ticket.getDeadlineDay()))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(ticket.getDeadlineDay()))
                 .useCount(0)
                 .cancelCount(0)
                 .build();

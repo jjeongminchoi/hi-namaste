@@ -1,7 +1,9 @@
 package com.jm.hinamaste.domain.course.entity;
 
-import com.jm.hinamaste.domain.course.dto.CourseCreate;
-import com.jm.hinamaste.domain.course.dto.CourseEdit;
+import com.jm.hinamaste.domain.course.dto.request.CourseCreate;
+import com.jm.hinamaste.domain.course.dto.request.CourseDayDto;
+import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
+import com.jm.hinamaste.domain.course.dto.request.TimeSlotDto;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
@@ -9,9 +11,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -28,7 +34,7 @@ public class Course extends BaseEntity {
 
     private int maxReservationCount;
 
-    private int maxWaitCount;
+    private int maxWaitingCount;
 
     private int reservationDeadTime;
 
@@ -42,12 +48,15 @@ public class Course extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseDay> courseDays = new ArrayList<>();
+
     @Builder
-    public Course(String courseName, String introduce, int maxReservationCount, int maxWaitCount, int reservationDeadTime, int cancelDeadTime, LocalDate coursePeriodStart, LocalDate coursePeriodEnd, Member member) {
+    public Course(String courseName, String introduce, int maxReservationCount, int maxWaitingCount, int reservationDeadTime, int cancelDeadTime, LocalDate coursePeriodStart, LocalDate coursePeriodEnd, Member member) {
         this.courseName = courseName;
         this.introduce = introduce;
         this.maxReservationCount = maxReservationCount;
-        this.maxWaitCount = maxWaitCount;
+        this.maxWaitingCount = maxWaitingCount;
         this.reservationDeadTime = reservationDeadTime;
         this.cancelDeadTime = cancelDeadTime;
         this.coursePeriodStart = coursePeriodStart;
@@ -65,9 +74,28 @@ public class Course extends BaseEntity {
                 .courseName(courseCreate.getCourseName())
                 .introduce(courseCreate.getIntroduce())
                 .maxReservationCount(courseCreate.getMaxReservationCount())
-                .maxWaitCount(courseCreate.getMaxWaitCount())
+                .maxWaitingCount(courseCreate.getMaxWaitingCount())
+                .reservationDeadTime(courseCreate.getReservationDeadTime())
+                .cancelDeadTime(courseCreate.getCancelDeadTime())
+                .coursePeriodStart(courseCreate.getCoursePeriodStart())
+                .coursePeriodEnd(courseCreate.getCoursePeriodEnd())
                 .build();
         course.setMember(instructor);
+
+        for (CourseDayDto courseDayDto : courseCreate.getCourseDays()) {
+            CourseDay courseDay = CourseDay.builder()
+                    .dayOfWeek(courseDayDto.getDayOfWeek())
+                    .build();
+            courseDay.setCourse(course);
+
+            for (TimeSlotDto timeSlotDto : courseDayDto.getTimeSlots()) {
+                TimeSlot timeSlot = TimeSlot.builder()
+                        .startTime(timeSlotDto.getStartTime())
+                        .endTime(timeSlotDto.getEndTime())
+                        .build();
+                timeSlot.setCourseDay(courseDay);
+            }
+        }
 
         return course;
     }
@@ -77,7 +105,7 @@ public class Course extends BaseEntity {
         this.courseName = courseEdit.getCourseName();
         this.introduce = courseEdit.getIntroduce();
         this.maxReservationCount = courseEdit.getMaxReservationCount();
-        this.maxWaitCount = courseEdit.getMaxWaitCount();
+        this.maxWaitingCount = courseEdit.getMaxWaitingCount();
         this.reservationDeadTime = courseEdit.getReservationDeadTime();
         this.cancelDeadTime = courseEdit.getCancelDeadTime();
         this.coursePeriodStart = courseEdit.getCoursePeriodStart();

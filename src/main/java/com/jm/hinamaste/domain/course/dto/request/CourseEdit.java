@@ -1,4 +1,4 @@
-package com.jm.hinamaste.domain.course.dto;
+package com.jm.hinamaste.domain.course.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +23,7 @@ public class CourseEdit {
     private int maxReservationCount;
 
     @NotNull(message = "최대 대기 인원수를 입력해 주세요.")
-    private int maxWaitCount;
+    private int maxWaitingCount;
 
     @NotNull(message = "예약 가능 시간을 입력해 주세요.")
     private int reservationDeadTime;
@@ -38,12 +38,12 @@ public class CourseEdit {
     private LocalDate coursePeriodEnd;
 
     @Builder
-    public CourseEdit(Long instructorId, String courseName, String introduce, int maxReservationCount, int maxWaitCount, int reservationDeadTime, int cancelDeadTime, LocalDate coursePeriodStart, LocalDate coursePeriodEnd) {
+    public CourseEdit(Long instructorId, String courseName, String introduce, int maxReservationCount, int maxWaitingCount, int reservationDeadTime, int cancelDeadTime, LocalDate coursePeriodStart, LocalDate coursePeriodEnd) {
         this.instructorId = instructorId;
         this.courseName = courseName;
         this.introduce = introduce;
         this.maxReservationCount = maxReservationCount;
-        this.maxWaitCount = maxWaitCount;
+        this.maxWaitingCount = maxWaitingCount;
         this.reservationDeadTime = reservationDeadTime;
         this.cancelDeadTime = cancelDeadTime;
         this.coursePeriodStart = coursePeriodStart;

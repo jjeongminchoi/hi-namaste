@@ -19,7 +19,7 @@ public class CourseResponse {
 
     private int maxReservationCount;
 
-    private int maxWaitCount;
+    private int maxWaitingCount;
 
     private int reservationDeadTime;
 
@@ -36,7 +36,7 @@ public class CourseResponse {
         this.courseName = course.getCourseName();
         this.introduce = course.getIntroduce();
         this.maxReservationCount = course.getMaxReservationCount();
-        this.maxWaitCount = course.getMaxWaitCount();
+        this.maxWaitingCount = course.getMaxWaitingCount();
         this.reservationDeadTime = course.getReservationDeadTime();
         this.cancelDeadTime = course.getCancelDeadTime();
         this.coursePeriodStart = course.getCoursePeriodStart();

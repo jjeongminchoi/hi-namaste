@@ -1,7 +1,7 @@
 package com.jm.hinamaste.domain.course.controller;
 
-import com.jm.hinamaste.domain.course.dto.CourseCreate;
-import com.jm.hinamaste.domain.course.dto.CourseEdit;
+import com.jm.hinamaste.domain.course.dto.request.CourseCreate;
+import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
 import com.jm.hinamaste.domain.course.service.CourseService;
 import com.jm.hinamaste.global.ResponseDto;
 import jakarta.validation.Valid;

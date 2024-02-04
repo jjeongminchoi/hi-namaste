@@ -1,7 +1,7 @@
 package com.jm.hinamaste.domain.course.service;
 
-import com.jm.hinamaste.domain.course.dto.CourseCreate;
-import com.jm.hinamaste.domain.course.dto.CourseEdit;
+import com.jm.hinamaste.domain.course.dto.request.CourseCreate;
+import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
 import com.jm.hinamaste.domain.course.dto.CourseResponse;
 import com.jm.hinamaste.domain.course.entity.Course;
 import com.jm.hinamaste.domain.course.repository.CourseRepository;

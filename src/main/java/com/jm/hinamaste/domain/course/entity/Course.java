@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,21 +29,29 @@ public class Course extends BaseEntity {
     @Column(name = "course_id")
     private Long id;
 
+    private String courseGroupId;
+
     private String courseName;
 
     private String introduce;
+
+    private String dayOfWeek;
+
+    private LocalTime startTime;
+
+    private LocalTime endTime;
 
     private int maxReservationCount;
 
     private int maxWaitingCount;
 
-    private int reservationDeadTime;
+    private LocalTime reservationDeadTime;
 
-    private int cancelDeadTime;
+    private LocalTime cancelDeadTime;
 
-    private LocalDate coursePeriodStart;
+    private LocalDate courseStartDate;
 
-    private LocalDate coursePeriodEnd;
+    private LocalDate courseEndDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -52,16 +61,19 @@ public class Course extends BaseEntity {
     private List<CourseDay> courseDays = new ArrayList<>();
 
     @Builder
-    public Course(String courseName, String introduce, int maxReservationCount, int maxWaitingCount, int reservationDeadTime, int cancelDeadTime, LocalDate coursePeriodStart, LocalDate coursePeriodEnd, Member member) {
+    public Course(String courseGroupId, String courseName, String introduce, String dayOfWeek, LocalTime startTime, LocalTime endTime, int maxReservationCount, int maxWaitingCount, LocalTime reservationDeadTime, LocalTime cancelDeadTime, LocalDate courseStartDate, LocalDate courseEndDate) {
+        this.courseGroupId = courseGroupId;
         this.courseName = courseName;
         this.introduce = introduce;
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.maxReservationCount = maxReservationCount;
         this.maxWaitingCount = maxWaitingCount;
         this.reservationDeadTime = reservationDeadTime;
         this.cancelDeadTime = cancelDeadTime;
-        this.coursePeriodStart = coursePeriodStart;
-        this.coursePeriodEnd = coursePeriodEnd;
-        this.member = member;
+        this.courseStartDate = courseStartDate;
+        this.courseEndDate = courseEndDate;
     }
 
     public void setMember(Member member) {
@@ -77,8 +89,8 @@ public class Course extends BaseEntity {
                 .maxWaitingCount(courseCreate.getMaxWaitingCount())
                 .reservationDeadTime(courseCreate.getReservationDeadTime())
                 .cancelDeadTime(courseCreate.getCancelDeadTime())
-                .coursePeriodStart(courseCreate.getCoursePeriodStart())
-                .coursePeriodEnd(courseCreate.getCoursePeriodEnd())
+                .courseStartDate(courseCreate.getCourseStartDate())
+                .courseEndDate(courseCreate.getCourseEndDate())
                 .build();
         course.setMember(instructor);
 
@@ -108,7 +120,7 @@ public class Course extends BaseEntity {
         this.maxWaitingCount = courseEdit.getMaxWaitingCount();
         this.reservationDeadTime = courseEdit.getReservationDeadTime();
         this.cancelDeadTime = courseEdit.getCancelDeadTime();
-        this.coursePeriodStart = courseEdit.getCoursePeriodStart();
-        this.coursePeriodEnd = courseEdit.getCoursePeriodEnd();
+        this.courseStartDate = courseEdit.getCourseStartDate();
+        this.courseEndDate = courseEdit.getCourseEndDate();
     }
 }

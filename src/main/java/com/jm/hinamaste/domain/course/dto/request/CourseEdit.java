@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 public class CourseEdit {
@@ -26,19 +27,19 @@ public class CourseEdit {
     private int maxWaitingCount;
 
     @NotNull(message = "예약 가능 시간을 입력해 주세요.")
-    private int reservationDeadTime;
+    private LocalTime reservationDeadTime;
 
     @NotNull(message = "취소 가능 시간을 입력해 주세요.")
-    private int cancelDeadTime;
+    private LocalTime cancelDeadTime;
 
     @NotNull(message = "수업 시작 기간을 입력해 주세요.")
-    private LocalDate coursePeriodStart;
+    private LocalDate courseStartDate;
 
     @NotNull(message = "수업 종료 기간을 입력해 주세요.")
-    private LocalDate coursePeriodEnd;
+    private LocalDate courseEndDate;
 
     @Builder
-    public CourseEdit(Long instructorId, String courseName, String introduce, int maxReservationCount, int maxWaitingCount, int reservationDeadTime, int cancelDeadTime, LocalDate coursePeriodStart, LocalDate coursePeriodEnd) {
+    public CourseEdit(Long instructorId, String courseName, String introduce, int maxReservationCount, int maxWaitingCount, LocalTime reservationDeadTime, LocalTime cancelDeadTime, LocalDate courseStartDate, LocalDate courseEndDate) {
         this.instructorId = instructorId;
         this.courseName = courseName;
         this.introduce = introduce;
@@ -46,7 +47,7 @@ public class CourseEdit {
         this.maxWaitingCount = maxWaitingCount;
         this.reservationDeadTime = reservationDeadTime;
         this.cancelDeadTime = cancelDeadTime;
-        this.coursePeriodStart = coursePeriodStart;
-        this.coursePeriodEnd = coursePeriodEnd;
+        this.courseStartDate = courseStartDate;
+        this.courseEndDate = courseEndDate;
     }
 }

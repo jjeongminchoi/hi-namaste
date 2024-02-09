@@ -4,7 +4,7 @@ import com.jm.hinamaste.domain.course.entity.Course;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 public class CourseResponse {
@@ -21,25 +21,19 @@ public class CourseResponse {
 
     private int maxWaitingCount;
 
-    private int reservationDeadTime;
+    private LocalDateTime reservationDeadDateTime;
 
-    private int cancelDeadTime;
-
-    private LocalDate coursePeriodStart;
-
-    private LocalDate coursePeriodEnd;
+    private LocalDateTime cancelDeadDateTime;
 
     @Builder
     public CourseResponse(Course course) {
         this.id = course.getId();
-        this.instructorName = course.getMember().getUsername();
+        this.instructorName = course.getInstructor().getUsername();
         this.courseName = course.getCourseName();
         this.introduce = course.getIntroduce();
         this.maxReservationCount = course.getMaxReservationCount();
         this.maxWaitingCount = course.getMaxWaitingCount();
-        this.reservationDeadTime = course.getReservationDeadTime();
-        this.cancelDeadTime = course.getCancelDeadTime();
-        this.coursePeriodStart = course.getCoursePeriodStart();
-        this.coursePeriodEnd = course.getCoursePeriodEnd();
+        this.reservationDeadDateTime = course.getReservationDeadDateTime();
+        this.cancelDeadDateTime = course.getCancelDeadDateTime();
     }
 }

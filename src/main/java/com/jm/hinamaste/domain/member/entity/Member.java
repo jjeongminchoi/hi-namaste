@@ -49,9 +49,6 @@ public class Member extends BaseEntity implements Serializable { // 사용자 �
     private MemberStatus memberStatus;
 
     @OneToMany(mappedBy = "member")
-    private List<Course> courses = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
     private List<MemberTicket> memberTickets = new ArrayList<>();
 
     @Builder

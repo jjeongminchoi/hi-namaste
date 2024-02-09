@@ -1,9 +1,6 @@
 package com.jm.hinamaste.domain.course.entity;
 
-import com.jm.hinamaste.domain.course.dto.request.CourseCreate;
-import com.jm.hinamaste.domain.course.dto.request.CourseDayDto;
 import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
-import com.jm.hinamaste.domain.course.dto.request.TimeSlotDto;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
@@ -11,14 +8,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -29,11 +25,11 @@ public class Course extends BaseEntity {
     @Column(name = "course_id")
     private Long id;
 
-    private String courseGroupId;
-
     private String courseName;
 
     private String introduce;
+
+    private LocalDate courseDate;
 
     private String dayOfWeek;
 
@@ -45,82 +41,89 @@ public class Course extends BaseEntity {
 
     private int maxWaitingCount;
 
-    private LocalTime reservationDeadTime;
+    private LocalDateTime reservationDeadDateTime;
 
-    private LocalTime cancelDeadTime;
+    private LocalDateTime cancelDeadDateTime;
 
-    private LocalDate courseStartDate;
+    private int reservationCount;
 
-    private LocalDate courseEndDate;
+    private String dayOff;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "instructor_id")
+    private Member instructor;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CourseDay> courseDays = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ClassInfo classInfo;
 
     @Builder
-    public Course(String courseGroupId, String courseName, String introduce, String dayOfWeek, LocalTime startTime, LocalTime endTime, int maxReservationCount, int maxWaitingCount, LocalTime reservationDeadTime, LocalTime cancelDeadTime, LocalDate courseStartDate, LocalDate courseEndDate) {
-        this.courseGroupId = courseGroupId;
+    public Course(String courseName, String introduce, LocalDate courseDate, String dayOfWeek, LocalTime startTime, LocalTime endTime, int maxReservationCount, int maxWaitingCount, LocalDateTime reservationDeadDateTime, LocalDateTime cancelDeadDateTime, int reservationCount, String dayOff, Member instructor, ClassInfo classInfo) {
         this.courseName = courseName;
         this.introduce = introduce;
+        this.courseDate = courseDate;
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
         this.maxReservationCount = maxReservationCount;
         this.maxWaitingCount = maxWaitingCount;
-        this.reservationDeadTime = reservationDeadTime;
-        this.cancelDeadTime = cancelDeadTime;
-        this.courseStartDate = courseStartDate;
-        this.courseEndDate = courseEndDate;
+        this.reservationDeadDateTime = reservationDeadDateTime;
+        this.cancelDeadDateTime = cancelDeadDateTime;
+        this.reservationCount = reservationCount;
+        this.dayOff = dayOff;
+        this.instructor = instructor;
+        this.classInfo = classInfo;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
-        member.getCourses().add(this);
-    }
+    public static List<Course> createCourse(ClassInfo classInfo) {
+        List<Course> courses = new ArrayList<>();
 
-    public static Course createCourse(Member instructor, CourseCreate courseCreate) {
-        Course course = Course.builder()
-                .courseName(courseCreate.getCourseName())
-                .introduce(courseCreate.getIntroduce())
-                .maxReservationCount(courseCreate.getMaxReservationCount())
-                .maxWaitingCount(courseCreate.getMaxWaitingCount())
-                .reservationDeadTime(courseCreate.getReservationDeadTime())
-                .cancelDeadTime(courseCreate.getCancelDeadTime())
-                .courseStartDate(courseCreate.getCourseStartDate())
-                .courseEndDate(courseCreate.getCourseEndDate())
-                .build();
-        course.setMember(instructor);
+        LocalDate startDate = classInfo.getCourseStartPeriod();
+        LocalDate endDate = classInfo.getCourseEndPeriod();
+        LocalDate currentDate = LocalDate.now();
 
-        for (CourseDayDto courseDayDto : courseCreate.getCourseDays()) {
-            CourseDay courseDay = CourseDay.builder()
-                    .dayOfWeek(courseDayDto.getDayOfWeek())
-                    .build();
-            courseDay.setCourse(course);
+        int days = startDate.until(endDate).getDays();
 
-            for (TimeSlotDto timeSlotDto : courseDayDto.getTimeSlots()) {
-                TimeSlot timeSlot = TimeSlot.builder()
-                        .startTime(timeSlotDto.getStartTime())
-                        .endTime(timeSlotDto.getEndTime())
-                        .build();
-                timeSlot.setCourseDay(courseDay);
+        LocalDate checkDate = startDate;
+
+        for (int i = 0; i <= days; i++) {
+            if (checkDate.isEqual(currentDate) || checkDate.isAfter(currentDate)) {
+                for (CourseDay courseDay : classInfo.getCourseDays()) {
+                    if (courseDay.getDayOfWeek().equals(checkDate.getDayOfWeek().name())) { // 요청등록요일.equals(체크요일)
+                        for (TimeSlot timeSlot : courseDay.getTimeSlots()) {
+                            Course course = Course.builder()
+                                    .courseName(classInfo.getCourseName())
+                                    .introduce(classInfo.getIntroduce())
+                                    .courseDate(checkDate)
+                                    .dayOfWeek(courseDay.getDayOfWeek())
+                                    .startTime(timeSlot.getStartTime())
+                                    .endTime(timeSlot.getEndTime())
+                                    .maxReservationCount(classInfo.getMaxReservationCount())
+                                    .maxWaitingCount(classInfo.getMaxWaitingCount())
+                                    .reservationDeadDateTime(LocalDateTime.of(checkDate, timeSlot.getStartTime().minusHours(classInfo.getReservationDeadTime().getHour()).minusMinutes(classInfo.getReservationDeadTime().getMinute())))
+                                    .cancelDeadDateTime(LocalDateTime.of(checkDate, timeSlot.getStartTime().minusHours(classInfo.getCancelDeadTime().getHour()).minusMinutes(classInfo.getCancelDeadTime().getMinute())))
+                                    .reservationCount(0)
+                                    .dayOff("N")
+                                    .instructor(classInfo.getInstructor())
+                                    .classInfo(classInfo)
+                                    .build();
+                            courses.add(course);
+                        }
+                    }
+                }
             }
+            checkDate = checkDate.plusDays(1);
         }
-
-        return course;
+        return courses;
     }
 
     public void editCourse(Member instructor, CourseEdit courseEdit) {
-        this.member = instructor;
+        this.instructor = instructor;
         this.courseName = courseEdit.getCourseName();
         this.introduce = courseEdit.getIntroduce();
         this.maxReservationCount = courseEdit.getMaxReservationCount();
         this.maxWaitingCount = courseEdit.getMaxWaitingCount();
-        this.reservationDeadTime = courseEdit.getReservationDeadTime();
-        this.cancelDeadTime = courseEdit.getCancelDeadTime();
-        this.courseStartDate = courseEdit.getCourseStartDate();
-        this.courseEndDate = courseEdit.getCourseEndDate();
+        this.reservationDeadDateTime = LocalDateTime.of(this.courseDate, courseEdit.getReservationDeadTime());
+        this.cancelDeadDateTime = LocalDateTime.of(this.courseDate, courseEdit.getCancelDeadTime());
+        this.dayOff = courseEdit.getDayOff();
     }
 }

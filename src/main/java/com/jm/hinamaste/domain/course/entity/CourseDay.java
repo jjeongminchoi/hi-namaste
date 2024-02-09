@@ -1,5 +1,6 @@
 package com.jm.hinamaste.domain.course.entity;
 
+import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class CourseDay {
+public class CourseDay extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +23,8 @@ public class CourseDay {
     private String dayOfWeek;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JoinColumn(name = "class_info_id")
+    private ClassInfo classInfo;
 
     @OneToMany(mappedBy = "courseDay", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TimeSlot> timeSlots = new ArrayList<>();
@@ -33,8 +34,8 @@ public class CourseDay {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
-        course.getCourseDays().add(this);
+    public void setClassInfo(ClassInfo classInfo) {
+        this.classInfo = classInfo;
+        classInfo.getCourseDays().add(this);
     }
 }

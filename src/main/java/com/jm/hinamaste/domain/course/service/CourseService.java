@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CourseService {
 
-    Long create(CourseCreate courseCreate);
+    void create(CourseCreate courseCreate);
 
     List<CourseResponse> getList();
 

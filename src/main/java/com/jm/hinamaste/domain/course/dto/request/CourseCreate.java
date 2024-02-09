@@ -34,16 +34,16 @@ public class CourseCreate {
     private LocalTime cancelDeadTime;
 
     @NotNull(message = "수업 시작 기간을 입력해 주세요.")
-    private LocalDate courseStartDate;
+    private LocalDate courseStartPeriod;
 
     @NotNull(message = "수업 종료 기간을 입력해 주세요.")
-    private LocalDate courseEndDate;
+    private LocalDate courseEndPeriod;
 
     @NotNull(message = "적용할 요일을 입력해 주세요.")
     private List<CourseDayDto> courseDays;
 
     @Builder
-    public CourseCreate(Long instructorId, String courseName, String introduce, int maxReservationCount, int maxWaitingCount, LocalTime reservationDeadTime, LocalTime cancelDeadTime, LocalDate courseStartDate, LocalDate courseEndDate, List<CourseDayDto> courseDays) {
+    public CourseCreate(Long instructorId, String courseName, String introduce, int maxReservationCount, int maxWaitingCount, LocalTime reservationDeadTime, LocalTime cancelDeadTime, LocalDate courseStartPeriod, LocalDate courseEndPeriod, List<CourseDayDto> courseDays) {
         this.instructorId = instructorId;
         this.courseName = courseName;
         this.introduce = introduce;
@@ -51,8 +51,8 @@ public class CourseCreate {
         this.maxWaitingCount = maxWaitingCount;
         this.reservationDeadTime = reservationDeadTime;
         this.cancelDeadTime = cancelDeadTime;
-        this.courseStartDate = courseStartDate;
-        this.courseEndDate = courseEndDate;
+        this.courseStartPeriod = courseStartPeriod;
+        this.courseEndPeriod = courseEndPeriod;
         this.courseDays = courseDays;
     }
 }

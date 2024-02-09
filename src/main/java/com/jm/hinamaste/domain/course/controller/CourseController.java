@@ -22,9 +22,8 @@ public class CourseController {
     @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid CourseCreate courseCreate) {
-        return ResponseEntity.ok(new ResponseDto<>(
-                "수업을 생성하였습니다.", courseService.create(courseCreate)
-        ));
+        courseService.create(courseCreate);
+        return ResponseEntity.ok(new ResponseDto<>("수업을 생성하였습니다."));
     }
 
     @GetMapping

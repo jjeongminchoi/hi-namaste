@@ -54,6 +54,7 @@ public class Course extends BaseEntity {
     private Member instructor;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_info_id")
     private ClassInfo classInfo;
 
     @Builder
@@ -88,7 +89,7 @@ public class Course extends BaseEntity {
         for (int i = 0; i <= days; i++) {
             if (checkDate.isEqual(currentDate) || checkDate.isAfter(currentDate)) {
                 for (CourseDay courseDay : classInfo.getCourseDays()) {
-                    if (courseDay.getDayOfWeek().equals(checkDate.getDayOfWeek().name())) { // 요청등록요일.equals(체크요일)
+                    if (courseDay.getDayOfWeek().equals(checkDate.getDayOfWeek().name())) {
                         for (TimeSlot timeSlot : courseDay.getTimeSlots()) {
                             Course course = Course.builder()
                                     .courseName(classInfo.getCourseName())
@@ -120,10 +121,14 @@ public class Course extends BaseEntity {
         this.instructor = instructor;
         this.courseName = courseEdit.getCourseName();
         this.introduce = courseEdit.getIntroduce();
+        this.courseDate = courseEdit.getCourseDate();
+        this.dayOfWeek = courseEdit.getCourseDate().getDayOfWeek().name();
+        this.startTime = courseEdit.getStartTime();
+        this.endTime = courseEdit.getEndTime();
         this.maxReservationCount = courseEdit.getMaxReservationCount();
         this.maxWaitingCount = courseEdit.getMaxWaitingCount();
-        this.reservationDeadDateTime = LocalDateTime.of(this.courseDate, courseEdit.getReservationDeadTime());
-        this.cancelDeadDateTime = LocalDateTime.of(this.courseDate, courseEdit.getCancelDeadTime());
+        this.reservationDeadDateTime = LocalDateTime.of(this.courseDate, this.startTime.minusHours(courseEdit.getReservationDeadTime().getHour()).minusMinutes(courseEdit.getReservationDeadTime().getMinute()));
+        this.cancelDeadDateTime = LocalDateTime.of(this.courseDate, this.startTime.minusHours(courseEdit.getCancelDeadTime().getHour()).minusMinutes(courseEdit.getCancelDeadTime().getMinute()));
         this.dayOff = courseEdit.getDayOff();
     }
 }

@@ -1,6 +1,5 @@
 package com.jm.hinamaste.domain.member.service;
 
-import com.jm.hinamaste.domain.member.constant.MemberType;
 import com.jm.hinamaste.domain.member.dto.MemberEdit;
 import com.jm.hinamaste.domain.member.dto.MemberResponse;
 import com.jm.hinamaste.domain.member.dto.MemberTypeEdit;

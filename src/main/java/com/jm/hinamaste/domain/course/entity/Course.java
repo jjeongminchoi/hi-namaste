@@ -1,5 +1,6 @@
 package com.jm.hinamaste.domain.course.entity;
 
+import com.jm.hinamaste.domain.course.constant.CourseStatus;
 import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.global.audit.BaseEntity;
@@ -47,6 +48,10 @@ public class Course extends BaseEntity {
 
     private int reservationCount;
 
+    private int waitingCount;
+
+    private CourseStatus courseStatus;
+
     private String dayOff;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,7 +63,7 @@ public class Course extends BaseEntity {
     private ClassInfo classInfo;
 
     @Builder
-    public Course(String courseName, String introduce, LocalDate courseDate, String dayOfWeek, LocalTime startTime, LocalTime endTime, int maxReservationCount, int maxWaitingCount, LocalDateTime reservationDeadDateTime, LocalDateTime cancelDeadDateTime, int reservationCount, String dayOff, Member instructor, ClassInfo classInfo) {
+    public Course(String courseName, String introduce, LocalDate courseDate, String dayOfWeek, LocalTime startTime, LocalTime endTime, int maxReservationCount, int maxWaitingCount, LocalDateTime reservationDeadDateTime, LocalDateTime cancelDeadDateTime, int reservationCount, int waitingCount, CourseStatus courseStatus, String dayOff, Member instructor, ClassInfo classInfo) {
         this.courseName = courseName;
         this.introduce = introduce;
         this.courseDate = courseDate;
@@ -70,6 +75,8 @@ public class Course extends BaseEntity {
         this.reservationDeadDateTime = reservationDeadDateTime;
         this.cancelDeadDateTime = cancelDeadDateTime;
         this.reservationCount = reservationCount;
+        this.waitingCount = waitingCount;
+        this.courseStatus = courseStatus;
         this.dayOff = dayOff;
         this.instructor = instructor;
         this.classInfo = classInfo;
@@ -103,6 +110,8 @@ public class Course extends BaseEntity {
                                     .reservationDeadDateTime(LocalDateTime.of(checkDate, timeSlot.getStartTime().minusHours(classInfo.getReservationDeadTime().getHour()).minusMinutes(classInfo.getReservationDeadTime().getMinute())))
                                     .cancelDeadDateTime(LocalDateTime.of(checkDate, timeSlot.getStartTime().minusHours(classInfo.getCancelDeadTime().getHour()).minusMinutes(classInfo.getCancelDeadTime().getMinute())))
                                     .reservationCount(0)
+                                    .waitingCount(0)
+                                    .courseStatus(CourseStatus.RESERVE)
                                     .dayOff("N")
                                     .instructor(classInfo.getInstructor())
                                     .classInfo(classInfo)
@@ -130,5 +139,15 @@ public class Course extends BaseEntity {
         this.reservationDeadDateTime = LocalDateTime.of(this.courseDate, this.startTime.minusHours(courseEdit.getReservationDeadTime().getHour()).minusMinutes(courseEdit.getReservationDeadTime().getMinute()));
         this.cancelDeadDateTime = LocalDateTime.of(this.courseDate, this.startTime.minusHours(courseEdit.getCancelDeadTime().getHour()).minusMinutes(courseEdit.getCancelDeadTime().getMinute()));
         this.dayOff = courseEdit.getDayOff();
+    }
+
+    public void changeCourseStatus() {
+        if (reservationCount == maxReservationCount + maxWaitingCount) {
+            this.courseStatus = CourseStatus.FULL;
+        } else if (reservationCount == maxReservationCount) {
+            this.courseStatus = CourseStatus.WAIT;
+        } else if (reservationCount < maxReservationCount) {
+            this.courseStatus = CourseStatus.RESERVE;
+        }
     }
 }

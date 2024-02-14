@@ -50,6 +50,7 @@ public class Course extends BaseEntity {
 
     private int waitingCount;
 
+    @Enumerated(EnumType.STRING)
     private CourseStatus courseStatus;
 
     private String dayOff;

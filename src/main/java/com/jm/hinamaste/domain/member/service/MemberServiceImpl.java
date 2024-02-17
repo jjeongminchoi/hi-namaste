@@ -1,6 +1,5 @@
 package com.jm.hinamaste.domain.member.service;
 
-import com.jm.hinamaste.domain.member.constant.MemberType;
 import com.jm.hinamaste.domain.member.dto.MemberEdit;
 import com.jm.hinamaste.domain.member.dto.MemberResponse;
 import com.jm.hinamaste.domain.member.dto.MemberTypeEdit;
@@ -58,12 +57,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public Long registerTicket(Long memberId, Long ticketId) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findMember(memberId)
                 .orElseThrow(MemberNotFound::new);
-
-        if (!MemberType.MEMBER.equals(member.getMemberType())) {
-            throw new MemberNotFound();
-        }
 
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(TicketNotFound::new);

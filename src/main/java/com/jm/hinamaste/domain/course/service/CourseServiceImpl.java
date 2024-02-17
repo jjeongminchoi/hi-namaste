@@ -7,12 +7,10 @@ import com.jm.hinamaste.domain.course.entity.ClassInfo;
 import com.jm.hinamaste.domain.course.entity.Course;
 import com.jm.hinamaste.domain.course.repository.ClassInfoRepository;
 import com.jm.hinamaste.domain.course.repository.CourseRepository;
-import com.jm.hinamaste.domain.member.constant.MemberType;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.member.repository.MemberRepository;
 import com.jm.hinamaste.global.exception.CourseNotFound;
 import com.jm.hinamaste.global.exception.InstructorNotFound;
-import com.jm.hinamaste.global.exception.MemberNotFound;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void create(CourseCreate courseCreate) {
         // 강사 체크
-        Member instructor = isInstructor(courseCreate.getInstructorId());
+        Member instructor = memberRepository.findInstructor(courseCreate.getInstructorId())
+                .orElseThrow(InstructorNotFound::new);
 
         // 클래스정보(수업 기준정보) 생성
         ClassInfo classInfo = ClassInfo.createClassInfo(instructor, courseCreate);
@@ -64,7 +63,8 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(CourseNotFound::new);
 
-        Member instructor = isInstructor(courseEdit.getInstructorId());
+        Member instructor = memberRepository.findInstructor(courseEdit.getInstructorId())
+                .orElseThrow(InstructorNotFound::new);
 
         course.editCourse(instructor, courseEdit);
     }
@@ -75,16 +75,5 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(CourseNotFound::new);
         courseRepository.delete(course);
-    }
-
-    private Member isInstructor(Long instructorId) {
-        Member member = memberRepository.findById(instructorId)
-                .orElseThrow(MemberNotFound::new);
-
-        if (!MemberType.INSTRUCTOR.equals(member.getMemberType())) {
-            throw new InstructorNotFound();
-        }
-
-        return member;
     }
 }

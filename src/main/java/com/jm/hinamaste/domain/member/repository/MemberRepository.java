@@ -11,6 +11,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByEmail(String email);
 
-    @Query("SELECT count(m) FROM Member m WHERE m.id = :memberId AND m.memberType = 'MEMBER'")
-    int findMember(@Param("memberId") Long memberId);
+    @Query("SELECT m FROM Member m WHERE m.id = :memberId AND m.memberType = 'MEMBER'")
+    Optional<Member> findMember(@Param("memberId") Long memberId);
+
+    @Query("SELECT m FROM Member m WHERE m.id = :instructorId AND m.memberType = 'INSTRUCTOR'")
+    Optional<Member> findInstructor(@Param("instructorId") Long instructorId);
 }

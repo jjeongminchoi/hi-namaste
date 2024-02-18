@@ -1,5 +1,6 @@
 package com.jm.hinamaste.domain.member.entity;
 
+import com.jm.hinamaste.domain.member.constant.MemberTicketStatus;
 import com.jm.hinamaste.domain.ticket.entity.Ticket;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
@@ -28,6 +29,8 @@ public class MemberTicket extends BaseEntity {
 
     private int cancelCount;
 
+    private MemberTicketStatus memberTicketStatus;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -42,6 +45,7 @@ public class MemberTicket extends BaseEntity {
         this.endDate = endDate;
         this.useCount = useCount;
         this.cancelCount = cancelCount;
+        this.memberTicketStatus = MemberTicketStatus.ACTIVE;
     }
 
     public void setMember(Member member) {
@@ -64,5 +68,9 @@ public class MemberTicket extends BaseEntity {
         memberTicket.setMember(member);
         memberTicket.setTicket(ticket);
         return memberTicket;
+    }
+
+    public void changeStatus(MemberTicketStatus memberTicketStatus) {
+        this.memberTicketStatus = memberTicketStatus;
     }
 }

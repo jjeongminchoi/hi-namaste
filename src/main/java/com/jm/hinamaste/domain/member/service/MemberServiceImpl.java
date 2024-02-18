@@ -6,6 +6,7 @@ import com.jm.hinamaste.domain.member.dto.MemberTypeEdit;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.member.repository.MemberRepository;
 import com.jm.hinamaste.domain.member.entity.MemberTicket;
+import com.jm.hinamaste.domain.member.repository.MemberTicketRepository;
 import com.jm.hinamaste.domain.ticket.entity.Ticket;
 import com.jm.hinamaste.domain.ticket.repository.TicketRepository;
 import com.jm.hinamaste.global.exception.MemberNotFound;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberTicketRepository memberTicketRepository;
     private final TicketRepository ticketRepository;
 
     @Override
@@ -63,9 +65,7 @@ public class MemberServiceImpl implements MemberService {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(TicketNotFound::new);
 
-        MemberTicket memberTicket = MemberTicket.createMemberTicket(member, ticket);
-
-        return memberTicket.getId();
+        return memberTicketRepository.save(MemberTicket.createMemberTicket(member, ticket)).getId();
     }
 
     @Transactional

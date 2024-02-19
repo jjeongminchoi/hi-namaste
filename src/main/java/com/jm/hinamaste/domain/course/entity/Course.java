@@ -4,6 +4,7 @@ import com.jm.hinamaste.domain.course.constant.CourseStatus;
 import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.global.audit.BaseEntity;
+import com.jm.hinamaste.global.exception.ReservationFull;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -137,18 +138,30 @@ public class Course extends BaseEntity {
         this.endTime = courseEdit.getEndTime();
         this.maxReservationCount = courseEdit.getMaxReservationCount();
         this.maxWaitingCount = courseEdit.getMaxWaitingCount();
-        this.reservationDeadDateTime = LocalDateTime.of(this.courseDate, this.startTime.minusHours(courseEdit.getReservationDeadTime().getHour()).minusMinutes(courseEdit.getReservationDeadTime().getMinute()));
-        this.cancelDeadDateTime = LocalDateTime.of(this.courseDate, this.startTime.minusHours(courseEdit.getCancelDeadTime().getHour()).minusMinutes(courseEdit.getCancelDeadTime().getMinute()));
+        this.reservationDeadDateTime = LocalDateTime.of(courseDate, startTime.minusHours(courseEdit.getReservationDeadTime().getHour()).minusMinutes(courseEdit.getReservationDeadTime().getMinute()));
+        this.cancelDeadDateTime = LocalDateTime.of(courseDate, startTime.minusHours(courseEdit.getCancelDeadTime().getHour()).minusMinutes(courseEdit.getCancelDeadTime().getMinute()));
         this.dayOff = courseEdit.getDayOff();
     }
 
     public void changeCourseStatus() {
-        if (reservationCount == maxReservationCount + maxWaitingCount) {
-            this.courseStatus = CourseStatus.FULL;
-        } else if (reservationCount == maxReservationCount) {
-            this.courseStatus = CourseStatus.WAIT;
-        } else if (reservationCount < maxReservationCount) {
-            this.courseStatus = CourseStatus.RESERVE;
+        if (reservationCount < maxReservationCount) {
+            courseStatus = CourseStatus.RESERVE;
+        } else if (reservationCount == maxReservationCount && waitingCount < maxWaitingCount) {
+            courseStatus = CourseStatus.WAIT;
+        } else if (reservationCount + waitingCount == maxReservationCount + maxWaitingCount) {
+            courseStatus = CourseStatus.FULL;
         }
+    }
+
+    // 예약
+    public void increaseReservationCount() {
+        if (courseStatus == CourseStatus.RESERVE) {
+            reservationCount++;
+        } else if (courseStatus == CourseStatus.WAIT) {
+            waitingCount++;
+        } else if (courseStatus == CourseStatus.FULL) {
+            throw new ReservationFull();
+        }
+        changeCourseStatus();
     }
 }

@@ -49,6 +49,9 @@ public class ReservationServiceImpl implements ReservationService {
 
         validateMemberTicket(course, memberTicket);
 
+        course.increaseReservationCount();
+        memberTicket.increaseUseCount();
+
         return reservationRepository.save(Reservation.builder()
                         .member(member)
                         .course(course)
@@ -61,7 +64,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 공통 & 기간제
         if (!LocalDateTime.now().isBefore(course.getReservationDeadDateTime())) {
-            throw new UnavailableDeadTime();
+            throw new DeadTimeUnavailable();
         }
 
         if (MemberTicketStatus.INACTIVE == memberTicket.getMemberTicketStatus()) {

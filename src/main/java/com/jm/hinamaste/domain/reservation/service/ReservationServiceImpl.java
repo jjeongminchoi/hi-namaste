@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,8 +49,6 @@ public class ReservationServiceImpl implements ReservationService {
 
         validateMemberTicket(course, memberTicket);
 
-        // todo count 로직 구현
-
         return reservationRepository.save(Reservation.builder()
                         .member(member)
                         .course(course)
@@ -61,7 +60,11 @@ public class ReservationServiceImpl implements ReservationService {
         Ticket ticket = memberTicket.getTicket();
 
         // 공통 & 기간제
-        if (MemberTicketStatus.INACTIVE.equals(memberTicket.getMemberTicketStatus())) {
+        if (!LocalDateTime.now().isBefore(course.getReservationDeadDateTime())) {
+            throw new UnavailableDeadTime();
+        }
+
+        if (MemberTicketStatus.INACTIVE == memberTicket.getMemberTicketStatus()) {
             throw new InactiveTicket();
         }
 
@@ -71,24 +74,22 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         // 횟수제
-        if (TicketType.COUNT.equals(ticket.getTicketType())) {
+        if (TicketType.COUNT == ticket.getTicketType()) {
             if (ticket.getMaxUseCount() == memberTicket.getUseCount()) {
                 throw new AlreadyReservationMaxCountUsed();
             }
 
             // 주간/월간 이용 횟수 제한 체크
-            if (CountType.WEEKLY.equals(ticket.getCountType())) {
-                LocalDate currentDate = LocalDate.now();
-                DayOfWeek currentDayOfWeek = currentDate.getDayOfWeek();
-                LocalDate monDate = (currentDayOfWeek == DayOfWeek.SUNDAY) ? currentDate.plusDays(1).with(DayOfWeek.MONDAY) : currentDate.with(DayOfWeek.MONDAY);
-                LocalDate friDate = (currentDayOfWeek == DayOfWeek.SUNDAY) ? currentDate.plusDays(5).with(DayOfWeek.FRIDAY) : currentDate.with(DayOfWeek.FRIDAY);
+            if (CountType.WEEKLY == ticket.getCountType()) {
+                LocalDate monDate = getDateOfWeek(DayOfWeek.MONDAY);
+                LocalDate friDate = getDateOfWeek(DayOfWeek.FRIDAY);
 
                 int reservationCountForThisWeek = reservationRepository.findReservationCountForThisWeek(memberTicket.getMember().getId(), monDate, friDate);
 
                 if (reservationCountForThisWeek == Integer.parseInt(ticket.getCountSet())) {
                     throw new WeeklyUsageExhausted();
                 }
-            } else if (CountType.MONTHLY.equals(ticket.getCountType())) {
+            } else if (CountType.MONTHLY == ticket.getCountType()) {
                 LocalDate currentDate = LocalDate.now();
                 LocalDate firstDayOfMonth = currentDate.withDayOfMonth(1);
                 LocalDate lastDayOfMonth = currentDate.withDayOfMonth(currentDate.lengthOfMonth());
@@ -100,5 +101,17 @@ public class ReservationServiceImpl implements ReservationService {
                 }
             }
         }
+    }
+
+    private static LocalDate getDateOfWeek(DayOfWeek dayOfWeek) {
+        LocalDate currentDate = LocalDate.now();
+
+        if (DayOfWeek.MONDAY == dayOfWeek) {
+            return (currentDate.getDayOfWeek() == DayOfWeek.SUNDAY) ? currentDate.plusDays(1).with(dayOfWeek) : currentDate.with(dayOfWeek);
+        } else if (DayOfWeek.FRIDAY == dayOfWeek) {
+            return (currentDate.getDayOfWeek() == DayOfWeek.SUNDAY) ? currentDate.plusDays(5).with(dayOfWeek) : currentDate.with(dayOfWeek);
+        }
+
+        return currentDate;
     }
 }

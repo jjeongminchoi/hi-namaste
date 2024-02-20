@@ -5,12 +5,12 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class AlreadyReservationMaxCountUsed extends CustomExceptionHandler {
+public class ReservationNotFound extends CustomExceptionHandler {
 
-    private final int STATUS_CODE = HttpStatus.BAD_REQUEST.value();
-    private static final String MESSAGE = "이미 예약 횟수를 모두 사용하였습니다.";
+    private final int STATUS_CODE = HttpStatus.NOT_FOUND.value();
+    private static final String MESSAGE = "예약정보를 찾을 수 없습니다.";
 
-    public AlreadyReservationMaxCountUsed() {
+    public ReservationNotFound() {
         super(MESSAGE);
     }
 

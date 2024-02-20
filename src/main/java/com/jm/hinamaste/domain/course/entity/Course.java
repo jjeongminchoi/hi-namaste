@@ -164,4 +164,14 @@ public class Course extends BaseEntity {
         }
         changeCourseStatus();
     }
+
+    // 예약취소
+    public void decreaseReservationCount() {
+        if (waitingCount == 0) {
+            reservationCount--;
+        } else if (waitingCount > 0) {
+            waitingCount--;
+        }
+        changeCourseStatus();
+    }
 }

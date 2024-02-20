@@ -5,12 +5,12 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class AlreadyReservationMaxCountUsed extends CustomExceptionHandler {
+public class AlreadyCancelReservationMaxCountUsed extends CustomExceptionHandler {
 
     private final int STATUS_CODE = HttpStatus.BAD_REQUEST.value();
-    private static final String MESSAGE = "이미 예약 횟수를 모두 사용하였습니다.";
+    private static final String MESSAGE = "이미 예약취소 횟수를 모두 사용하였습니다.";
 
-    public AlreadyReservationMaxCountUsed() {
+    public AlreadyCancelReservationMaxCountUsed() {
         super(MESSAGE);
     }
 

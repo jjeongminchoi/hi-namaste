@@ -8,10 +8,7 @@ import com.jm.hinamaste.global.exception.MemberNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,9 +23,23 @@ public class ReservationController {
         if (userPrincipal == null) {
             throw new MemberNotFound();
         }
+
         return ResponseEntity.ok(new ResponseDto<>(
                 "수업 예약을 하였습니다.",
-                reservationService.reserve(courseId, userPrincipal.getUserId(), memberTicketId)
+                reservationService.reserve(courseId, memberTicketId)
         ));
+    }
+
+    @PatchMapping("/course/{courseId}/reservation/{reservationId}")
+    public ResponseEntity<?> cancelReserve(@PathVariable Long courseId,
+                                           @PathVariable Long reservationId,
+                                           @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        if (userPrincipal == null) {
+            throw new MemberNotFound();
+        }
+
+        reservationService.cancelReserve(courseId, reservationId);
+
+        return ResponseEntity.ok(new ResponseDto<>("수업 예약을 취소하였습니다."));
     }
 }

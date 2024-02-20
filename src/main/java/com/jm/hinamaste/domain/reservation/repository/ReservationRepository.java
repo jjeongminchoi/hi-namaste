@@ -9,9 +9,9 @@ import java.time.LocalDate;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    @Query("SELECT COUNT(r) FROM Reservation r JOIN r.member m JOIN r.course c WHERE m.id = :memberId AND c.courseDate BETWEEN :monDate AND :friDate")
+    @Query("SELECT COUNT(r) FROM Reservation r JOIN r.course c WHERE r.memberTicket.member.id = :memberId AND c.courseDate BETWEEN :monDate AND :friDate")
     int findReservationCountForThisWeek(@Param("memberId") Long memberId, @Param("monDate") LocalDate monDate, @Param("friDate") LocalDate friDate);
 
-    @Query("SELECT COUNT(r) FROM Reservation r JOIN r.member m JOIN r.course c WHERE m.id = :memberId AND c.courseDate BETWEEN :firstDayOfMonth AND :lastDayOfMonth")
+    @Query("SELECT COUNT(r) FROM Reservation r JOIN r.course c WHERE r.memberTicket.member.id = :memberId AND c.courseDate BETWEEN :firstDayOfMonth AND :lastDayOfMonth")
     int findReservationCountForThisMonth(@Param("memberId") Long memberId, @Param("firstDayOfMonth") LocalDate firstDayOfMonth, @Param("lastDayOfMonth") LocalDate lastDayOfMonth);
 }

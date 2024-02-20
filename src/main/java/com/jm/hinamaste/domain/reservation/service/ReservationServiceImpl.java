@@ -3,9 +3,7 @@ package com.jm.hinamaste.domain.reservation.service;
 import com.jm.hinamaste.domain.course.entity.Course;
 import com.jm.hinamaste.domain.course.repository.CourseRepository;
 import com.jm.hinamaste.domain.member.constant.MemberTicketStatus;
-import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.member.entity.MemberTicket;
-import com.jm.hinamaste.domain.member.repository.MemberRepository;
 import com.jm.hinamaste.domain.member.repository.MemberTicketRepository;
 import com.jm.hinamaste.domain.reservation.repository.ReservationRepository;
 import com.jm.hinamaste.domain.reservation.entity.Reservation;
@@ -30,36 +28,53 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final CourseRepository courseRepository;
-    private final MemberRepository memberRepository;
     private final MemberTicketRepository memberTicketRepository;
 
+    @Transactional
     @Override
-    public Long reserve(Long courseId, Long memberId, Long memberTicketId) {
+    public Long reserve(Long courseId, Long memberTicketId) {
         // 수업 확인
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(CourseNotFound::new);
-
-        // 회원 확인
-        Member member = memberRepository.findMember(memberId)
-                .orElseThrow(MemberNotFound::new);
 
         // 수강권 확인
         MemberTicket memberTicket = memberTicketRepository.findById(memberTicketId)
                 .orElseThrow(MemberTicketNotFound::new);
 
-        validateMemberTicket(course, memberTicket);
+        validateReservation(course, memberTicket);
 
-        course.increaseReservationCount();
-        memberTicket.increaseUseCount();
+        reservationProcess(course, memberTicket);
 
         return reservationRepository.save(Reservation.builder()
-                        .member(member)
+                        .memberTicket(memberTicket)
                         .course(course)
                         .build())
                 .getId();
     }
 
-    public void validateMemberTicket(Course course, MemberTicket memberTicket) {
+    @Transactional
+    @Override
+    public void cancelReserve(Long courseId, Long reservationId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(CourseNotFound::new);
+
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(ReservationNotFound::new);
+
+        MemberTicket memberTicket = reservation.getMemberTicket();
+
+        if (!LocalDateTime.now().isBefore(course.getCancelDeadDateTime())) {
+            throw new DeadTimeUnavailable();
+        }
+
+        if (memberTicket.getTicket().getMaxUseCount() == memberTicket.getCancelCount()) {
+            throw new AlreadyCancelReservationMaxCountUsed();
+        }
+
+        cancelProcess(reservation, memberTicket, course);
+    }
+
+    public void validateReservation(Course course, MemberTicket memberTicket) {
         Ticket ticket = memberTicket.getTicket();
 
         // 공통 & 기간제
@@ -116,5 +131,16 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         return currentDate;
+    }
+
+    private static void reservationProcess(Course course, MemberTicket memberTicket) {
+        course.increaseReservationCount();
+        memberTicket.changeCountForReservation();
+    }
+
+    private static void cancelProcess(Reservation reservation, MemberTicket memberTicket, Course course) {
+        reservation.CancelReservation();
+        memberTicket.changeCountForCancelReservation();
+        course.decreaseReservationCount();
     }
 }

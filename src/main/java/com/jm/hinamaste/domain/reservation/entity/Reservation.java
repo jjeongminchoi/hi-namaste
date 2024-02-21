@@ -35,7 +35,7 @@ public class Reservation {
         this.course = course;
     }
 
-    public void CancelReservation() {
+    public void setStatusToCancel() {
         this.reservationStatus = ReservationStatus.CANCEL;
     }
 }

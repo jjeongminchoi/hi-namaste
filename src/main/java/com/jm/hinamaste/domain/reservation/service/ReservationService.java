@@ -4,5 +4,5 @@ public interface ReservationService {
 
     Long reserve(Long courseId, Long memberTicketId);
 
-    void cancelReserve(Long courseId, Long reservationId);
+    void cancelReserve(Long memberId, Long reservationId);
 }

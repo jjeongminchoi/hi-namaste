@@ -54,13 +54,15 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public void cancelReserve(Long courseId, Long reservationId) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(CourseNotFound::new);
-
+    public void cancelReserve(Long memberId, Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(ReservationNotFound::new);
 
+        if (!memberId.equals(reservation.getMemberTicket().getMember().getId())) {
+            throw new InvalidMember();
+        }
+
+        Course course = reservation.getCourse();
         MemberTicket memberTicket = reservation.getMemberTicket();
 
         if (!LocalDateTime.now().isBefore(course.getCancelDeadDateTime())) {
@@ -134,13 +136,13 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private static void reservationProcess(Course course, MemberTicket memberTicket) {
-        course.increaseReservationCount();
-        memberTicket.changeCountForReservation();
+        course.increaseCount();
+        memberTicket.countForReservation();
     }
 
     private static void cancelProcess(Reservation reservation, MemberTicket memberTicket, Course course) {
-        reservation.CancelReservation();
-        memberTicket.changeCountForCancelReservation();
-        course.decreaseReservationCount();
+        reservation.setStatusToCancel();
+        memberTicket.countForCancelReservation();
+        course.decreaseCount();
     }
 }

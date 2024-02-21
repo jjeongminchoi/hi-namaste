@@ -74,11 +74,11 @@ public class MemberTicket extends BaseEntity {
         this.memberTicketStatus = memberTicketStatus;
     }
 
-    public void changeCountForReservation() {
+    public void countForReservation() {
         this.useCount++;
     }
 
-    public void changeCountForCancelReservation() {
+    public void countForCancelReservation() {
         this.useCount--;
         this.cancelCount++;
     }

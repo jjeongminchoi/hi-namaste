@@ -154,7 +154,7 @@ public class Course extends BaseEntity {
     }
 
     // 예약
-    public void increaseReservationCount() {
+    public void increaseCount() {
         if (courseStatus == CourseStatus.RESERVE) {
             reservationCount++;
         } else if (courseStatus == CourseStatus.WAIT) {
@@ -166,7 +166,7 @@ public class Course extends BaseEntity {
     }
 
     // 예약취소
-    public void decreaseReservationCount() {
+    public void decreaseCount() {
         if (waitingCount == 0) {
             reservationCount--;
         } else if (waitingCount > 0) {

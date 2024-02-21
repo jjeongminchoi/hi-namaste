@@ -1,6 +1,5 @@
 package com.jm.hinamaste.domain.reservation.controller;
 
-import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.reservation.service.ReservationService;
 import com.jm.hinamaste.global.ResponseDto;
 import com.jm.hinamaste.global.auth.UserPrincipal;
@@ -30,15 +29,14 @@ public class ReservationController {
         ));
     }
 
-    @PatchMapping("/course/{courseId}/reservation/{reservationId}")
-    public ResponseEntity<?> cancelReserve(@PathVariable Long courseId,
-                                           @PathVariable Long reservationId,
+    @PatchMapping("/reservation/{reservationId}")
+    public ResponseEntity<?> cancelReserve(@PathVariable Long reservationId,
                                            @AuthenticationPrincipal UserPrincipal userPrincipal) {
         if (userPrincipal == null) {
             throw new MemberNotFound();
         }
 
-        reservationService.cancelReserve(courseId, reservationId);
+        reservationService.cancelReserve(userPrincipal.getUserId(), reservationId);
 
         return ResponseEntity.ok(new ResponseDto<>("수업 예약을 취소하였습니다."));
     }

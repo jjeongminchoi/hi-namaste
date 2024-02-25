@@ -3,8 +3,8 @@ package com.jm.hinamaste.domain.course.entity;
 import com.jm.hinamaste.domain.course.constant.CourseStatus;
 import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
 import com.jm.hinamaste.domain.member.entity.Member;
+import com.jm.hinamaste.domain.reservation.constant.ReservationStatus;
 import com.jm.hinamaste.global.audit.BaseEntity;
-import com.jm.hinamaste.global.exception.ReservationFull;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -159,17 +159,15 @@ public class Course extends BaseEntity {
             reservationCount++;
         } else if (courseStatus == CourseStatus.WAIT) {
             waitingCount++;
-        } else if (courseStatus == CourseStatus.FULL) {
-            throw new ReservationFull();
         }
         changeCourseStatus();
     }
 
     // 예약취소
-    public void decreaseCount() {
-        if (waitingCount == 0) {
+    public void decreaseCount(ReservationStatus reservationStatus) {
+        if (reservationStatus == ReservationStatus.RESERVATION) {
             reservationCount--;
-        } else if (waitingCount > 0) {
+        } else if (reservationStatus == ReservationStatus.WAIT) {
             waitingCount--;
         }
         changeCourseStatus();

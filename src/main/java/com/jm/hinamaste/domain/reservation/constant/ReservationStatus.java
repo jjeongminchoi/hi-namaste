@@ -1,5 +1,5 @@
 package com.jm.hinamaste.domain.reservation.constant;
 
 public enum ReservationStatus {
-    RESERVATION, CANCEL
+    RESERVATION, WAIT, CANCEL
 }

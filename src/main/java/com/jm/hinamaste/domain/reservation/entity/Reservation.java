@@ -23,19 +23,21 @@ public class Reservation {
     private ReservationStatus reservationStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_ticket_id")
     private MemberTicket memberTicket;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id")
     private Course course;
 
     @Builder
-    public Reservation(MemberTicket memberTicket, Course course) {
-        this.reservationStatus = ReservationStatus.RESERVATION;
+    public Reservation(ReservationStatus reservationStatus, MemberTicket memberTicket, Course course) {
+        this.reservationStatus = reservationStatus;
         this.memberTicket = memberTicket;
         this.course = course;
     }
 
-    public void setStatusToCancel() {
-        this.reservationStatus = ReservationStatus.CANCEL;
+    public void changeStatus(ReservationStatus reservationStatus) {
+        this.reservationStatus = reservationStatus;
     }
 }

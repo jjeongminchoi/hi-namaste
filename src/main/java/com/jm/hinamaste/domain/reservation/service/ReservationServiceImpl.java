@@ -14,7 +14,6 @@ import com.jm.hinamaste.domain.ticket.constant.TicketType;
 import com.jm.hinamaste.domain.ticket.entity.Ticket;
 import com.jm.hinamaste.global.exception.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -102,9 +100,9 @@ public class ReservationServiceImpl implements ReservationService {
                 LocalDate monDate = getDateOfWeek(DayOfWeek.MONDAY);
                 LocalDate friDate = getDateOfWeek(DayOfWeek.FRIDAY);
 
-                int reservationCountForThisWeek = reservationRepository.findReservationCountForThisWeek(memberTicket.getMember().getId(), monDate, friDate);
+                Long reservationCountForThisWeek = reservationRepository.findReservationCountForThisWeek(memberTicket.getMember().getId(), monDate, friDate);
 
-                if (reservationCountForThisWeek == Integer.parseInt(ticket.getCountSet())) {
+                if (reservationCountForThisWeek == Long.parseLong(ticket.getCountSet())) {
                     throw new WeeklyUsageExhausted();
                 }
             } else if (CountType.MONTHLY == ticket.getCountType()) {
@@ -112,9 +110,9 @@ public class ReservationServiceImpl implements ReservationService {
                 LocalDate firstDayOfMonth = currentDate.withDayOfMonth(1);
                 LocalDate lastDayOfMonth = currentDate.withDayOfMonth(currentDate.lengthOfMonth());
 
-                int reservationCountForThisMonth = reservationRepository.findReservationCountForThisMonth(memberTicket.getMember().getId(), firstDayOfMonth, lastDayOfMonth);
+                Long reservationCountForThisMonth = reservationRepository.findReservationCountForThisMonth(memberTicket.getMember().getId(), firstDayOfMonth, lastDayOfMonth);
 
-                if (reservationCountForThisMonth == Integer.parseInt(ticket.getCountSet())) {
+                if (reservationCountForThisMonth == Long.parseLong(ticket.getCountSet())) {
                     throw new MonthlyUsageExhausted();
                 }
             }

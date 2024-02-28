@@ -12,14 +12,12 @@ import com.jm.hinamaste.domain.member.repository.MemberRepository;
 import com.jm.hinamaste.global.exception.CourseNotFound;
 import com.jm.hinamaste.global.exception.InstructorNotFound;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service

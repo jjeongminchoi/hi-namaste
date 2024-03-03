@@ -58,7 +58,7 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public void edit(Long courseId, CourseEdit courseEdit) {
-        Course course = courseRepository.findById(courseId)
+        Course course = courseRepository.findByIdWithPessimisticLock(courseId)
                 .orElseThrow(CourseNotFound::new);
 
         Member instructor = memberRepository.findInstructor(courseEdit.getInstructorId())
@@ -70,7 +70,7 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public void delete(Long courseId) {
-        Course course = courseRepository.findById(courseId)
+        Course course = courseRepository.findByIdWithPessimisticLock(courseId)
                 .orElseThrow(CourseNotFound::new);
         courseRepository.delete(course);
     }

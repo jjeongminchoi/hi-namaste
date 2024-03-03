@@ -35,7 +35,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Long reserve(Long courseId, Long memberTicketId) {
         // 수업 확인
-        Course course = courseRepository.findById(courseId)
+        Course course = courseRepository.findByIdWithPessimisticLock(courseId)
                 .orElseThrow(CourseNotFound::new);
 
         // 수강권 확인

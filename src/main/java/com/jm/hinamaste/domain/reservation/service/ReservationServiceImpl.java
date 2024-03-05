@@ -35,7 +35,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Long reserve(Long courseId, Long memberTicketId) {
         // 수업 확인
-        Course course = courseRepository.findByIdWithPessimisticLock(courseId)
+        Course course = courseRepository.findByIdWithOptimisticLock(courseId)
                 .orElseThrow(CourseNotFound::new);
 
         // 수강권 확인
@@ -68,7 +68,7 @@ public class ReservationServiceImpl implements ReservationService {
         waitingToReservation(course);
     }
 
-    public void validateReservation(MemberTicket memberTicket, Course course) {
+    private void validateReservation(MemberTicket memberTicket, Course course) {
         if (CourseStatus.FULL.equals(course.getCourseStatus())) {
             throw new ReservationFull();
         }

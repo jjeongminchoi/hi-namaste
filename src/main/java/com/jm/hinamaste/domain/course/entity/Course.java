@@ -2,6 +2,7 @@ package com.jm.hinamaste.domain.course.entity;
 
 import com.jm.hinamaste.domain.course.constant.CourseStatus;
 import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
+import com.jm.hinamaste.domain.course.dto.request.CoursesEdit;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.reservation.constant.ReservationStatus;
 import com.jm.hinamaste.global.audit.BaseEntity;
@@ -146,6 +147,16 @@ public class Course extends BaseEntity {
         this.reservationDeadDateTime = LocalDateTime.of(courseDate, startTime.minusHours(courseEdit.getReservationDeadTime().getHour()).minusMinutes(courseEdit.getReservationDeadTime().getMinute()));
         this.cancelDeadDateTime = LocalDateTime.of(courseDate, startTime.minusHours(courseEdit.getCancelDeadTime().getHour()).minusMinutes(courseEdit.getCancelDeadTime().getMinute()));
         this.dayOff = courseEdit.getDayOff();
+    }
+
+    public void editCourses(Member instructor, CoursesEdit coursesEdit) {
+        this.instructor = instructor;
+        this.courseName = coursesEdit.getCourseName();
+        this.introduce = coursesEdit.getIntroduce();
+        this.maxReservationCount = coursesEdit.getMaxReservationCount();
+        this.maxWaitingCount = coursesEdit.getMaxWaitingCount();
+        this.reservationDeadDateTime = LocalDateTime.of(courseDate, startTime.minusHours(coursesEdit.getReservationDeadTime().getHour()).minusMinutes(coursesEdit.getReservationDeadTime().getMinute()));
+        this.cancelDeadDateTime = LocalDateTime.of(courseDate, startTime.minusHours(coursesEdit.getCancelDeadTime().getHour()).minusMinutes(coursesEdit.getCancelDeadTime().getMinute()));
     }
 
     public void changeCourseStatus() {

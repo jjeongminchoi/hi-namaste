@@ -3,12 +3,14 @@ package com.jm.hinamaste.domain.course.service;
 import com.jm.hinamaste.domain.course.dto.request.CourseCreate;
 import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
 import com.jm.hinamaste.domain.course.dto.CourseResponse;
+import com.jm.hinamaste.domain.course.dto.request.CoursesEdit;
 import com.jm.hinamaste.domain.course.entity.ClassInfo;
 import com.jm.hinamaste.domain.course.entity.Course;
 import com.jm.hinamaste.domain.course.repository.ClassInfoRepository;
 import com.jm.hinamaste.domain.course.repository.CourseRepository;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.member.repository.MemberRepository;
+import com.jm.hinamaste.global.exception.ClassInfoNotFound;
 import com.jm.hinamaste.global.exception.CourseNotFound;
 import com.jm.hinamaste.global.exception.InstructorNotFound;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +67,22 @@ public class CourseServiceImpl implements CourseService {
                 .orElseThrow(InstructorNotFound::new);
 
         course.editCourse(instructor, courseEdit);
+    }
+
+    @Transactional
+    @Override
+    public void editCourses(Long classInfoId, CoursesEdit coursesEdit) {
+        ClassInfo classInfo = classInfoRepository.findById(classInfoId)
+                .orElseThrow(ClassInfoNotFound::new);
+
+        List<Course> courses = courseRepository.findByClassInfo(classInfo.getId());
+
+        Member instructor = memberRepository.findInstructor(coursesEdit.getInstructorId())
+                .orElseThrow(InstructorNotFound::new);
+
+        for (Course course : courses) {
+            course.editCourses(instructor, coursesEdit);
+        }
     }
 
     @Transactional

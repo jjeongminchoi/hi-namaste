@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
@@ -14,4 +15,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Lock(LockModeType.OPTIMISTIC)
     @Query("select c from Course c where c.id = :courseId")
     Optional<Course> findByIdWithOptimisticLock(@Param("courseId") Long courseId);
+
+    @Query("select c from Course c where c.classInfo.id = :classInfoId")
+    List<Course> findByClassInfo(@Param("classInfoId") Long classInfoId);
 }

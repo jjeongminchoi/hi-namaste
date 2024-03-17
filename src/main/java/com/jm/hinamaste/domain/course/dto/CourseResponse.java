@@ -1,5 +1,6 @@
 package com.jm.hinamaste.domain.course.dto;
 
+import com.jm.hinamaste.domain.course.entity.ClassInfo;
 import com.jm.hinamaste.domain.course.entity.Course;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +38,8 @@ public class CourseResponse {
 
     private int reservationCount;
 
+    private ClassInfo classInfo;
+
     @Builder
     public CourseResponse(Course course) {
         this.id = course.getId();
@@ -52,5 +55,6 @@ public class CourseResponse {
         this.reservationDeadDateTime = course.getReservationDeadDateTime();
         this.cancelDeadDateTime = course.getCancelDeadDateTime();
         this.reservationCount = course.getReservationCount();
+        this.classInfo = course.getClassInfo();
     }
 }

@@ -26,7 +26,6 @@ public class MemberController {
         return ResponseEntity.ok(new ResponseDto<>("회원 조회에 성공하였습니다.", memberService.get(memberId)));
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     @PatchMapping("/members/{memberId}")
     public ResponseEntity<?> edit(@PathVariable Long memberId, @RequestBody @Valid MemberEdit memberEdit) {
         memberService.edit(memberId, memberEdit);

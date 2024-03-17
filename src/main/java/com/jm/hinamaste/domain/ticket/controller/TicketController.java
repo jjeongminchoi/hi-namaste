@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
 @RequiredArgsConstructor
 @RequestMapping("/ticket")
 @RestController
@@ -18,6 +17,7 @@ public class TicketController {
 
     private final TicketService ticketService;
 
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid TicketCreate ticketCreate) {
         return ResponseEntity.ok(new ResponseDto<>("수강권이 생성되었습니다.", ticketService.create(ticketCreate)));
@@ -28,17 +28,20 @@ public class TicketController {
         return ResponseEntity.ok(new ResponseDto<>("수강권 조회에 성공하였습니다.", ticketService.get(ticketId)));
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<?> getList() {
         return ResponseEntity.ok(new ResponseDto<>("수강권 전체 조회에 성공하였습니다.", ticketService.getList()));
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     @PatchMapping("/{ticketId}")
     public ResponseEntity<?> edit(@PathVariable Long ticketId, @RequestBody @Valid TicketEdit ticketEdit) {
         ticketService.edit(ticketId, ticketEdit);
         return ResponseEntity.ok(new ResponseDto<>("수강권 수정에 성공하였습니다."));
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{ticketId}")
     public ResponseEntity<?> delete(@PathVariable Long ticketId) {
         ticketService.delete(ticketId);

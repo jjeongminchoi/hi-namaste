@@ -7,7 +7,6 @@ import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.reservation.constant.ReservationStatus;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +18,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 @Slf4j
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 public class Course extends BaseEntity {
 
@@ -29,7 +32,7 @@ public class Course extends BaseEntity {
     private Long version;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "course_id")
     private Long id;
 
@@ -62,11 +65,11 @@ public class Course extends BaseEntity {
 
     private String dayOff;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "instructor_id")
     private Member instructor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "class_info_id")
     private ClassInfo classInfo;
 

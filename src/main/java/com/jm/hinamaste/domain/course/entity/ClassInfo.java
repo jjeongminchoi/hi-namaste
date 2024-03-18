@@ -6,7 +6,6 @@ import com.jm.hinamaste.domain.course.dto.request.TimeSlotDto;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,13 +15,18 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 public class ClassInfo extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "class_info_id")
     private Long id;
 
@@ -42,11 +46,11 @@ public class ClassInfo extends BaseEntity {
 
     private LocalDate courseEndPeriod;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "instructor_id")
     private Member instructor;
 
-    @OneToMany(mappedBy = "classInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "classInfo", cascade = ALL, orphanRemoval = true)
     private List<CourseDay> courseDays = new ArrayList<>();
 
     @Builder

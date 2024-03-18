@@ -6,7 +6,6 @@ import com.jm.hinamaste.domain.ticket.constant.TicketType;
 import com.jm.hinamaste.domain.ticket.dto.TicketEdit;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,18 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.EnumType.*;
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 public class Ticket extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "ticket_id")
     private Long id;
 
-    @Enumerated(value = STRING)
+    @Enumerated(STRING)
     private TicketType ticketType;
 
     private String ticketName;
@@ -39,7 +40,7 @@ public class Ticket extends BaseEntity {
 
     private int price;
 
-    @Enumerated(value = STRING)
+    @Enumerated(STRING)
     private CountType countType;
 
     private String countSet;

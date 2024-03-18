@@ -4,20 +4,24 @@ import com.jm.hinamaste.domain.member.constant.MemberTicketStatus;
 import com.jm.hinamaste.domain.ticket.entity.Ticket;
 import com.jm.hinamaste.global.audit.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import static jakarta.persistence.EnumType.*;
+import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 public class MemberTicket extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_ticket_id")
     private Long id;
 
@@ -29,13 +33,14 @@ public class MemberTicket extends BaseEntity {
 
     private int cancelCount;
 
+    @Enumerated(STRING)
     private MemberTicketStatus memberTicketStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 

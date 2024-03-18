@@ -17,4 +17,6 @@ public interface MemberService {
     Long registerTicket(Long memberId, Long ticketId);
 
     void changeMemberType(Long memberId, MemberTypeEdit memberTypeEdit);
+
+    void verifyMemberTicketExpiry();
 }

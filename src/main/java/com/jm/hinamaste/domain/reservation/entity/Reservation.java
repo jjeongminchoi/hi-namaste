@@ -4,29 +4,33 @@ import com.jm.hinamaste.domain.course.entity.Course;
 import com.jm.hinamaste.domain.member.entity.MemberTicket;
 import com.jm.hinamaste.domain.reservation.constant.ReservationStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.EnumType.*;
+import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 public class Reservation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "reservation_id")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private ReservationStatus reservationStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_ticket_id")
     private MemberTicket memberTicket;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "course_id")
     private Course course;
 

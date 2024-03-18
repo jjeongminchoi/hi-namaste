@@ -1,5 +1,6 @@
 package com.jm.hinamaste.domain.member.service;
 
+import com.jm.hinamaste.domain.member.constant.MemberTicketStatus;
 import com.jm.hinamaste.domain.member.dto.MemberEdit;
 import com.jm.hinamaste.domain.member.dto.MemberResponse;
 import com.jm.hinamaste.domain.member.dto.MemberTypeEdit;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,5 +76,15 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFound::new);
         member.changeMemberType(memberTypeEdit.getMemberType());
+    }
+
+    @Transactional
+    @Override
+    public void verifyMemberTicketExpiry() {
+        List<MemberTicket> memberTickets = memberTicketRepository.findByActiveMemberTicket();
+
+        memberTickets.stream()
+                .filter(mt -> mt.getEndDate().isBefore(LocalDate.now()))
+                .forEach(mt -> mt.changeStatus(MemberTicketStatus.INACTIVE));
     }
 }

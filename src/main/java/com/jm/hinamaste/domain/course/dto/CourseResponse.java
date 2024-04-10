@@ -2,6 +2,7 @@ package com.jm.hinamaste.domain.course.dto;
 
 import com.jm.hinamaste.domain.course.entity.ClassInfo;
 import com.jm.hinamaste.domain.course.entity.Course;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -40,6 +41,7 @@ public class CourseResponse {
 
     private ClassInfo classInfo;
 
+    @QueryProjection
     @Builder
     public CourseResponse(Course course) {
         this.id = course.getId();

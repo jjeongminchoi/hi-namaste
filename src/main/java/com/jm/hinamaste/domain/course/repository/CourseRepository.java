@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface CourseRepository extends JpaRepository<Course, Long> {
+public interface CourseRepository extends JpaRepository<Course, Long>, CourseRepositoryCustom {
 
     @Lock(LockModeType.OPTIMISTIC)
     @Query("select c from Course c where c.id = :courseId")

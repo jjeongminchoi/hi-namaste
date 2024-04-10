@@ -2,12 +2,14 @@ package com.jm.hinamaste.domain.course.controller;
 
 import com.jm.hinamaste.domain.course.dto.request.CourseCreate;
 import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
+import com.jm.hinamaste.domain.course.dto.request.CourseSearchCondition;
 import com.jm.hinamaste.domain.course.dto.request.CoursesEdit;
 import com.jm.hinamaste.domain.course.service.CourseService;
 import com.jm.hinamaste.global.ResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +30,8 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getList() {
-        return ResponseEntity.ok(new ResponseDto<>("수업 전체 조회에 성공하였습니다.", courseService.getList()));
+    public ResponseEntity<?> search(CourseSearchCondition condition, Pageable pageable) {
+        return ResponseEntity.ok(new ResponseDto<>("수업 조회에 성공하였습니다.", courseService.search(condition, pageable)));
     }
 
     @GetMapping("/{courseId}")

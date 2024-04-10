@@ -3,15 +3,16 @@ package com.jm.hinamaste.domain.course.service;
 import com.jm.hinamaste.domain.course.dto.request.CourseCreate;
 import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
 import com.jm.hinamaste.domain.course.dto.CourseResponse;
+import com.jm.hinamaste.domain.course.dto.request.CourseSearchCondition;
 import com.jm.hinamaste.domain.course.dto.request.CoursesEdit;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CourseService {
 
     void create(CourseCreate courseCreate);
 
-    List<CourseResponse> getList();
+    Page<CourseResponse> search(CourseSearchCondition condition, Pageable pageable);
 
     CourseResponse get(Long courseId);
 

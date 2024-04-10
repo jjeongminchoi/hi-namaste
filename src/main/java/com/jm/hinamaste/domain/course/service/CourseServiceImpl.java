@@ -3,6 +3,7 @@ package com.jm.hinamaste.domain.course.service;
 import com.jm.hinamaste.domain.course.dto.request.CourseCreate;
 import com.jm.hinamaste.domain.course.dto.request.CourseEdit;
 import com.jm.hinamaste.domain.course.dto.CourseResponse;
+import com.jm.hinamaste.domain.course.dto.request.CourseSearchCondition;
 import com.jm.hinamaste.domain.course.dto.request.CoursesEdit;
 import com.jm.hinamaste.domain.course.entity.ClassInfo;
 import com.jm.hinamaste.domain.course.entity.Course;
@@ -14,11 +15,12 @@ import com.jm.hinamaste.global.exception.ClassInfoNotFound;
 import com.jm.hinamaste.global.exception.CourseNotFound;
 import com.jm.hinamaste.global.exception.InstructorNotFound;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -46,8 +48,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseResponse> getList() {
-        return courseRepository.findAll().stream().map(CourseResponse::new).collect(Collectors.toList());
+    public Page<CourseResponse> search(CourseSearchCondition condition, Pageable pageable) {
+        return courseRepository.search(condition, pageable);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.jm.hinamaste.domain.course.dto.request;
 
-import com.jm.hinamaste.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 

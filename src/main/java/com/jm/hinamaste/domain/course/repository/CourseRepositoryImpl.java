@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.jm.hinamaste.domain.course.entity.QCourse.*;
@@ -29,7 +28,6 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
         List<CourseResponse> content = jpaQueryFactory
                 .select(new QCourseResponse(course))
                 .from(course)
-                .leftJoin(course.instructor, member)
                 .where(
                         coursePeriod(condition.getStartCourseDate(), condition.getEndCourseDate()),
                         dayOfWeekEq(condition.getDayOfWeek()),

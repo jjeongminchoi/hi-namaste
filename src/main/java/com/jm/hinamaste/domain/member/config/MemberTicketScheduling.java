@@ -13,7 +13,7 @@ public class MemberTicketScheduling {
 
     private final MemberService memberService;
 
-    @Scheduled(cron = "* * 0 * * ?")
+    @Scheduled(cron = "* 0 0 * * ?")
     public void verifyMemberTicketExpiry() {
         memberService.verifyMemberTicketExpiry();
     }

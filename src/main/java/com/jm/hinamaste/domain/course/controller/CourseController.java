@@ -30,7 +30,7 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<?> search(CourseSearchCondition condition, Pageable pageable) {
+    public ResponseEntity<?> search(@RequestBody CourseSearchCondition condition, Pageable pageable) {
         return ResponseEntity.ok(new ResponseDto<>("수업 조회에 성공하였습니다.", courseService.search(condition, pageable)));
     }
 

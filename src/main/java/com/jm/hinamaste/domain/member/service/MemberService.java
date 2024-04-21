@@ -1,14 +1,12 @@
 package com.jm.hinamaste.domain.member.service;
 
-import com.jm.hinamaste.domain.member.dto.MemberEdit;
-import com.jm.hinamaste.domain.member.dto.MemberResponse;
-import com.jm.hinamaste.domain.member.dto.MemberTypeEdit;
-
-import java.util.List;
+import com.jm.hinamaste.domain.member.dto.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface MemberService {
 
-    List<MemberResponse> getList();
+    Page<MemberSearchResponse> search(MemberSearchCondition condition, Pageable pageable);
 
     MemberResponse get(Long memberId);
 

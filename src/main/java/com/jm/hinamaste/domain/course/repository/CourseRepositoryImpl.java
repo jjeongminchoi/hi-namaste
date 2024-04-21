@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.jm.hinamaste.domain.course.entity.QCourse.*;
-import static com.jm.hinamaste.domain.member.entity.QMember.member;
 import static com.jm.hinamaste.global.querydsl.QuerydslUtil.nullSafeBuilder;
 
 @RequiredArgsConstructor
@@ -41,7 +40,6 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(course.count())
                 .from(course)
-                .leftJoin(course.instructor, member)
                 .where(
                         coursePeriod(condition.getStartCourseDate(), condition.getEndCourseDate()),
                         dayOfWeekEq(condition.getDayOfWeek()),

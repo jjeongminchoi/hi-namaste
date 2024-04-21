@@ -1,8 +1,6 @@
 package com.jm.hinamaste.domain.member.service;
 
-import com.jm.hinamaste.domain.member.dto.MemberEdit;
-import com.jm.hinamaste.domain.member.dto.MemberResponse;
-import com.jm.hinamaste.domain.member.dto.MemberTypeEdit;
+import com.jm.hinamaste.domain.member.dto.*;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.member.repository.MemberRepository;
 import com.jm.hinamaste.domain.member.entity.MemberTicket;
@@ -12,11 +10,10 @@ import com.jm.hinamaste.domain.ticket.repository.TicketRepository;
 import com.jm.hinamaste.global.exception.MemberNotFound;
 import com.jm.hinamaste.global.exception.TicketNotFound;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -28,8 +25,8 @@ public class MemberServiceImpl implements MemberService {
     private final TicketRepository ticketRepository;
 
     @Override
-    public List<MemberResponse> getList() {
-        return memberRepository.findAll().stream().map(MemberResponse::new).collect(Collectors.toList());
+    public Page<MemberSearchResponse> search(MemberSearchCondition condition, Pageable pageable) {
+        return memberRepository.search(condition, pageable);
     }
 
     @Override

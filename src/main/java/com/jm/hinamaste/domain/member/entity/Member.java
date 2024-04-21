@@ -22,7 +22,7 @@ import static lombok.AccessLevel.*;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-public class Member extends BaseEntity implements Serializable { // 사용자 인증 정보를 세션에 저장하고 복원하기 위해 내부적으로 객체 직렬화를 사용(spring-session-jdbc)
+public class Member extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -46,6 +46,8 @@ public class Member extends BaseEntity implements Serializable { // 사용자 �
     @Enumerated(STRING)
     private MemberStatus memberStatus;
 
+    private String memo;
+
     @OneToMany(mappedBy = "member")
     private List<MemberTicket> memberTickets = new ArrayList<>();
 
@@ -64,6 +66,10 @@ public class Member extends BaseEntity implements Serializable { // 사용자 �
         this.username = memberEdit.getUsername();
         this.sex = memberEdit.getSex();
         this.birthday = memberEdit.getBirthday();
+    }
+
+    public void editMemo(String memo) {
+        this.memo = memo;
     }
 
     public void changeMemberType(MemberType memberType) {

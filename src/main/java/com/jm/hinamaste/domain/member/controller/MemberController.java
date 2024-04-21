@@ -7,6 +7,7 @@ import com.jm.hinamaste.global.auth.AuthUtil;
 import com.jm.hinamaste.global.auth.UserPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,8 +22,8 @@ public class MemberController {
 
     @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/members")
-    public ResponseEntity<?> getList() {
-        return ResponseEntity.ok(new ResponseDto<>("회원 전체 조회에 성공하였습니다.", memberService.getList()));
+    public ResponseEntity<?> search(MemberSearchCondition condition, Pageable pageable) {
+        return ResponseEntity.ok(new ResponseDto<>("회원 전체 조회에 성공하였습니다.", memberService.search(condition, pageable)));
     }
 
     @GetMapping("/members/{memberId}")

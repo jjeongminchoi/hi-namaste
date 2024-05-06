@@ -11,6 +11,10 @@ import com.jm.hinamaste.domain.course.repository.ClassInfoRepository;
 import com.jm.hinamaste.domain.course.repository.CourseRepository;
 import com.jm.hinamaste.domain.member.entity.Member;
 import com.jm.hinamaste.domain.member.repository.MemberRepository;
+import com.jm.hinamaste.domain.settings.constant.CourseSearchPeriod;
+import com.jm.hinamaste.domain.settings.entity.Settings;
+import com.jm.hinamaste.domain.settings.repository.SettingsRepository;
+import com.jm.hinamaste.global.DateUtil;
 import com.jm.hinamaste.global.exception.ClassInfoNotFound;
 import com.jm.hinamaste.global.exception.CourseNotFound;
 import com.jm.hinamaste.global.exception.InstructorNotFound;
@@ -20,7 +24,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+
+import static com.jm.hinamaste.domain.settings.constant.CourseSearchPeriod.*;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -30,6 +41,8 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final ClassInfoRepository classInfoRepository;
     private final MemberRepository memberRepository;
+    private final SettingsRepository settingsRepository;
+    private final DateUtil dateUtil;
 
     @Transactional
     @Override
@@ -48,8 +61,45 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<CourseResponse> search(CourseSearchCondition condition, Pageable pageable) {
-        return courseRepository.search(condition, pageable);
+    public Page<CourseResponse> searchForManager(CourseSearchCondition condition, Pageable pageable) {
+        return courseRepository.searchForManager(condition, pageable);
+    }
+
+    @Override
+    public List<CourseResponse> searchForMember() {
+        //세팅된 조회기간 가져오기
+        CourseSearchPeriod searchPeriod = getSearchPeriod();
+
+        //현재일: 현재시간체크
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDate currentDate = dateUtil.getCurrentDate(currentDateTime);
+        DayOfWeek currentDayOfWeek = currentDate.getDayOfWeek();
+
+        LocalDate frontDate = null;
+        LocalDate backDate = null;
+
+        if (searchPeriod == WEEKLY) {
+            if (dateUtil.isWeekend(currentDayOfWeek)) {
+                frontDate = dateUtil.getMondayOfNextWeek(currentDate);
+                backDate = dateUtil.getFridayOfNextWeek(currentDate);
+            } else {
+                frontDate = dateUtil.getMondayOfThisWeek(currentDate);
+                backDate = dateUtil.getFridayOfThisWeek(currentDate);
+            }
+        } else if (searchPeriod == MONTHLY) {
+            LocalDateTime baseDateTime = getBaseDate(currentDate);
+
+            //현재일이 기준일보다 이후이면 다음달 조회
+            if (currentDateTime.isAfter(baseDateTime)) {
+                frontDate = dateUtil.getFirstDayOfNextMonth(currentDate);
+                backDate = dateUtil.getLastDayOfNextMonth(currentDate);
+            } else {
+                frontDate = dateUtil.getFirstDayOfThisMonth(currentDate);
+                backDate = dateUtil.getLastDayOfThisMonth(currentDate);
+            }
+        }
+
+        return courseRepository.searchForMember(frontDate, backDate);
     }
 
     @Override
@@ -93,5 +143,20 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(CourseNotFound::new);
         courseRepository.delete(course);
+    }
+
+    private CourseSearchPeriod getSearchPeriod() {
+        return settingsRepository
+                .findAll().stream()
+                .findFirst()
+                .map(Settings::getCourseSearchPeriod)
+                .orElse(WEEKLY);
+    }
+
+    private static LocalDateTime getBaseDate(LocalDate currentDate) {
+        //기준일: 현재월의 마지막날 21시59분59초
+        return LocalDateTime.of(
+                currentDate.with(TemporalAdjusters.lastDayOfMonth()),
+                LocalTime.of(21, 59, 59));
     }
 }

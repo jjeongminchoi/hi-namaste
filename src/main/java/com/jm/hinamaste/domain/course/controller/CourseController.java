@@ -29,14 +29,20 @@ public class CourseController {
         return ResponseEntity.ok(new ResponseDto<>("수업을 생성하였습니다."));
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    @GetMapping("/manager")
+    public ResponseEntity<?> searchForManager(@RequestBody CourseSearchCondition condition, Pageable pageable) {
+        return ResponseEntity.ok(new ResponseDto<>("관리자용 수업 조회에 성공하였습니다.", courseService.searchForManager(condition, pageable)));
+    }
+
     @GetMapping
-    public ResponseEntity<?> search(@RequestBody CourseSearchCondition condition, Pageable pageable) {
-        return ResponseEntity.ok(new ResponseDto<>("수업 조회에 성공하였습니다.", courseService.search(condition, pageable)));
+    public ResponseEntity<?> searchForMember() {
+        return ResponseEntity.ok(new ResponseDto<>("회원용 수업 조회에 성공하였습니다.", courseService.searchForMember()));
     }
 
     @GetMapping("/{courseId}")
     public ResponseEntity<?> get(@PathVariable Long courseId) {
-        return ResponseEntity.ok(new ResponseDto<>("수업 조회에 성공하였습니다.", courseService.get(courseId)));
+        return ResponseEntity.ok(new ResponseDto<>("수업 상세 조회에 성공하였습니다.", courseService.get(courseId)));
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")

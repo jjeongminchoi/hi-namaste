@@ -8,11 +8,15 @@ import com.jm.hinamaste.domain.course.dto.request.CoursesEdit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface CourseService {
 
     void create(CourseCreate courseCreate);
 
-    Page<CourseResponse> search(CourseSearchCondition condition, Pageable pageable);
+    Page<CourseResponse> searchForManager(CourseSearchCondition condition, Pageable pageable);
+
+    List<CourseResponse> searchForMember();
 
     CourseResponse get(Long courseId);
 

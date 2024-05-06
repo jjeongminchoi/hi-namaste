@@ -23,7 +23,7 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<CourseResponse> search(CourseSearchCondition condition, Pageable pageable) {
+    public Page<CourseResponse> searchForManager(CourseSearchCondition condition, Pageable pageable) {
         List<CourseResponse> content = jpaQueryFactory
                 .select(new QCourseResponse(course))
                 .from(course)
@@ -47,6 +47,15 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
                 );
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public List<CourseResponse> searchForMember(LocalDate frontDate, LocalDate backDate) {
+        return jpaQueryFactory
+                .select(new QCourseResponse(course))
+                .from(course)
+                .where(coursePeriod(frontDate, backDate))
+                .fetch();
     }
 
     private BooleanBuilder coursePeriod(LocalDate startCourseDate, LocalDate endCourseDate) {
